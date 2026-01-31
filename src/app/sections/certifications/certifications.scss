@@ -1,0 +1,49 @@
+/* Certifications logos-only layout (matches certifications.html) */
+.certifications h2 {
+  color: var(--accent);
+}
+.certifications .logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.9rem;
+  align-items: center;
+}
+.certifications .logo-card {
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 12px;
+  padding: 12px 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.certifications .logo-card img {
+  width: 100%;
+  max-width: 120px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+}
+.certifications .badge-card img {
+  width: auto;
+  max-width: 200px;
+  max-height: 120px;
+  height: auto;
+}
+.certifications .logo-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, #e3e6ea);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 640px) {
+  .certifications .logo-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .certifications .logo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

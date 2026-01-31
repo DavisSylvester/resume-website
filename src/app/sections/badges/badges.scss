@@ -1,0 +1,14 @@
+.badges h2 {
+  color: var(--accent);
+}
+.badges .cards {
+  align-items: start;
+}
+.badges .card {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.badges img {
+  border-radius: 8px;
+}

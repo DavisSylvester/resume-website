@@ -1,0 +1,39 @@
+.print-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #111;
+  background: #fff;
+}
+.print-header h1 {
+  margin: 0 0 0.25rem;
+}
+.print-header p {
+  margin: 0 0 1rem;
+}
+.print-section {
+  page-break-inside: avoid;
+  margin-bottom: 1rem;
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background: #fff;
+  }
+  .navbar,
+  .footer {
+    display: none !important;
+  }
+  .section {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+  }
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+}

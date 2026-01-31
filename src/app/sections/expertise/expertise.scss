@@ -1,0 +1,37 @@
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.9rem;
+  align-items: center;
+}
+.logo-tile {
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 12px;
+  padding: 12px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.logo-tile img {
+  width: 100%;
+  max-width: 120px;
+  height: 56px;
+  object-fit: contain;
+}
+.logo-label {
+  margin-top: 6px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.logo-tile:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, #e3e6ea);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.subgroup {
+  margin-top: 0.75rem;
+}
