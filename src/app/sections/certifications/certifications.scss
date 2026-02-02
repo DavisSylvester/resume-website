@@ -1,49 +1,48 @@
-/* Certifications logos-only layout (matches certifications.html) */
+/* Certifications layout: single-line horizontal scroll row */
 .certifications h2 {
   color: var(--accent);
 }
 .certifications .logo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.9rem;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
   align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding-bottom: 6px;
 }
 .certifications .logo-card {
-  background: #fff;
-  border: 1px solid #e3e6ea;
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--secondary) 25%, #e3e6ea);
   border-radius: 12px;
-  padding: 12px 10px 10px;
+  padding: 10px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+.certifications .logo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--secondary));
 }
 .certifications .logo-card img {
-  width: 100%;
-  max-width: 120px;
-  height: 56px;
+  width: auto;
+  max-width: 100%;
+  max-height: 48px;
+  height: auto;
   object-fit: contain;
   display: block;
 }
-.certifications .badge-card img {
-  width: auto;
-  max-width: 200px;
-  max-height: 120px;
-  height: auto;
-}
-.certifications .logo-card:hover {
-  border-color: color-mix(in srgb, var(--accent) 35%, #e3e6ea);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
   .certifications .logo-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-}
-
-@media (max-width: 420px) {
-  .certifications .logo-grid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
   }
 }
