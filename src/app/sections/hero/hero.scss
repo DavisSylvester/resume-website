@@ -47,13 +47,14 @@
 }
 
 .hero-name-box {
-  border: 4px solid var(--accent);
-  border-radius: 25px;
-  padding: 1.3rem 1.8rem;
-  background: rgba(92, 46, 145, 0.08);
-  backdrop-filter: blur(10px);
-  flex-shrink: 0;
+  border: 2px solid rgba(92, 46, 145, 0.3);
+  border-radius: 40px;
+  padding: 1.5rem 2rem;
+  background: rgba(92, 46, 145, 0.06);
+  backdrop-filter: blur(12px);
+  flex: 1;
   animation: slideInLeft 0.8s ease-out;
+  transition: all 300ms ease;
 }
 
 .hero-name {
@@ -92,14 +93,14 @@
 }
 
 .hero-tag-box {
-  border: 4px solid var(--accent);
-  border-radius: 25px;
-  padding: 1.3rem 1.2rem;
-  background: rgba(92, 46, 145, 0.08);
-  backdrop-filter: blur(10px);
-  max-width: 320px;
-  flex-shrink: 0;
+  border: 2px solid rgba(92, 46, 145, 0.3);
+  border-radius: 40px;
+  padding: 1.5rem 1.4rem;
+  background: rgba(92, 46, 145, 0.06);
+  backdrop-filter: blur(12px);
+  flex: 1;
   animation: slideInRight 0.8s ease-out;
+  transition: all 300ms ease;
 }
 
 .hero-tag {
@@ -182,9 +183,8 @@
 
   .hero-name-box,
   .hero-tag-box {
-    padding: 1.1rem 1.5rem;
-    border-radius: 20px;
-    max-width: 280px;
+    padding: 1.2rem 1.6rem;
+    border-radius: 35px;
   }
 }
 
@@ -226,8 +226,8 @@
 
   .hero-name-box,
   .hero-tag-box {
-    padding: 1rem 1.2rem;
-    max-width: 240px;
+    padding: 1.1rem 1.3rem;
+    border-radius: 32px;
   }
 }
 
@@ -262,9 +262,7 @@
 
   .hero-name-box,
   .hero-tag-box {
-    padding: 0.8rem;
-    border-radius: 15px;
-    border-width: 3px;
-    max-width: 160px;
+    padding: 0.9rem 1rem;
+    border-radius: 28px;
   }
 }
