@@ -1,0 +1,20 @@
+.contact {
+  margin-top: 1rem;
+}
+.contact h2 {
+  color: var(--accent);
+}
+.contact-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.contact .chip {
+  text-decoration: none;
+}
+.contact .subtle {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}

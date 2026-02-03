@@ -1,0 +1,8 @@
+<svg viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="96" fill="#5c2e91"/>
+  <!-- DS3 text -->
+  <text x="96" y="110" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="-3">DS3</text>
+  <!-- Accent accent line -->
+  <line x1="30" y1="130" x2="162" y2="130" stroke="#f5f5f7" stroke-width="3" stroke-linecap="round"/>
+</svg>

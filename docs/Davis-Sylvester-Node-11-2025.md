@@ -37,6 +37,7 @@ Code using Terraform and GitHub Actions.
 -   MS SQL, MySQL, MariaDB
 -   PostgreSQL
 -   MongoDB
+-   DynamoDB
 
 ### ☁️ Cloud & DevOps
 

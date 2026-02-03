@@ -23,11 +23,13 @@
 
 html,
 body {
+  width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family:
@@ -39,16 +41,29 @@ body {
     Helvetica,
     Arial,
     sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
-  max-width: 960px;
-  margin: 0 auto;
+  width: 100%;
   padding: 1.5rem;
+  flex: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .section {
-  margin: 1.5rem 0;
+  width: 100%;
 }
 
 /* Unified card design */
@@ -94,6 +109,8 @@ p {
 
 /* Navbar */
 .navbar {
+  width: 100%;
+  box-sizing: border-box;
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -112,6 +129,7 @@ p {
   }
   position: sticky;
   top: 0;
+  z-index: 100;
   background: rgba(255, 255, 255, 0.8); /* light translucent */
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(92, 46, 145, 0.15);
@@ -164,8 +182,12 @@ p {
 
 /* Footer */
 .footer {
+  width: 100%;
+  box-sizing: border-box;
   text-align: center;
   padding: 1.5rem;
+  background: var(--bg);
+  border-top: 1px solid rgba(92, 46, 145, 0.15);
   .chip {
     display: inline-flex;
     align-items: center;

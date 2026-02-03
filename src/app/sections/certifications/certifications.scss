@@ -4,41 +4,45 @@
 }
 .certifications .logo-grid {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.9rem;
   align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
+  justify-content: flex-start;
+  overflow: visible;
   padding-bottom: 6px;
 }
 .certifications .logo-card {
-  background: var(--card);
-  border: 1px solid color-mix(in srgb, var(--secondary) 25%, #e3e6ea);
+  background: #fff; /* match expertise tiles */
+  border: 1px solid #e3e6ea;
   border-radius: 12px;
-  padding: 10px;
+  padding: 6px 2.5px 5px; /* reduce left/right by half */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1 1 0;
+  flex: 1 1 0; /* allow shrink to avoid scroll */
   min-width: 0;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease,
-    border-color 160ms ease;
+  transition: border-color 160ms ease;
 }
 .certifications .logo-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--secondary));
+  /* no hover elevation */
+  border-color: color-mix(in srgb, var(--secondary) 25%, #e3e6ea);
 }
 .certifications .logo-card img {
   width: auto;
-  max-width: 100%;
-  max-height: 48px;
+  max-width: 240px; /* doubled */
+  max-height: 112px; /* doubled */
   height: auto;
   object-fit: contain;
   display: block;
+}
+
+/* Desktop: lock card width close to expertise tile visual */
+@media (min-width: 900px) {
+  .certifications .logo-card {
+    max-width: 240px; /* accommodate larger badge */
+    flex: 0 0 240px;
+  }
 }
 
 @media (max-width: 480px) {
