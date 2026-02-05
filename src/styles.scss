@@ -33,7 +33,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family:
-    'DM Sans',
+    "DM Sans",
     system-ui,
     -apple-system,
     Segoe UI,
@@ -364,7 +364,7 @@ p {
 }
 .feature.card p {
   margin: 0;
-  color: #565656;
+  color: #000000;
   font-size: 0.95rem;
   font-weight: 600;
 }
@@ -372,10 +372,8 @@ p {
   margin-top: 0.6rem;
 }
 .tech-chips .chip {
-  background: color-mix(in srgb, var(--accent) 18%, var(--secondary));
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--secondary));
-  color: #000000;
-  font-weight: 800;
+  background: color-mix(in srgb, var(--accent) 12%, var(--secondary));
+  border-color: color-mix(in srgb, var(--accent) 25%, var(--secondary));
 }
 .timeline {
   position: relative;
