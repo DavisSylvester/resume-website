@@ -6,4 +6,9 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './projects.html',
 })
-export class Projects {}
+export class Projects {
+  onContactClicked() {
+    // Handle contact button click
+    console.log('Contact button clicked');
+  }
+}
