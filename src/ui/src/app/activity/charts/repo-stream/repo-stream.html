@@ -1,0 +1,27 @@
+<ul class="viz-legend" aria-label="Repositories">
+  @for (s of series(); track s.key) {
+    <li>
+      <span class="viz-legend__swatch" [style.background]="'var(--series-' + s.slot + ')'"></span>
+      @if (s.url) {
+        <a [href]="s.url" target="_blank" rel="noopener">{{ s.label }}</a>
+      } @else {
+        <span>{{ s.label }}</span>
+      }
+      <span class="viz-legend__value">{{ fmt.format(s.total) }}</span>
+    </li>
+  }
+</ul>
+<div #canvas class="viz-canvas" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <table class="viz-table">
+    <caption>Public commits by repository, last 12 months</caption>
+    <thead>
+      <tr><th scope="col">Repository</th><th scope="col">Commits</th><th scope="col">Active weeks</th></tr>
+    </thead>
+    <tbody>
+      @for (s of series(); track s.key) {
+        <tr><th scope="row">{{ s.label }}</th><td>{{ fmt.format(s.total) }}</td><td>{{ s.byWeek.size }}</td></tr>
+      }
+    </tbody>
+  </table>
+}

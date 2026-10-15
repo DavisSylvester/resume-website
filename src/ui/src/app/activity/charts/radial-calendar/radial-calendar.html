@@ -1,0 +1,14 @@
+<div #canvas class="viz-canvas viz-canvas--center" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <table class="viz-table">
+    <caption>Contributions per month, private work included</caption>
+    <thead>
+      <tr><th scope="col">Month</th><th scope="col">Contributions</th><th scope="col">Busiest day</th></tr>
+    </thead>
+    <tbody>
+      @for (row of months(); track row.month) {
+        <tr><th scope="row">{{ row.month }}</th><td>{{ fmt.format(row.total) }}</td><td>{{ fmt.format(row.busiest) }}</td></tr>
+      }
+    </tbody>
+  </table>
+}

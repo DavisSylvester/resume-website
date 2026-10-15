@@ -1,0 +1,32 @@
+{
+  "name": "activity",
+  "version": "1.0.0",
+  "description": "GitHub coding-activity API: GraphQL collector + GitHub App webhook receiver, served from Bun on AWS Lambda",
+  "author": "Davis Sylvester",
+  "private": true,
+  "type": "module",
+  "module": "index.mts",
+  "scripts": {
+    "dev": "bun --watch dev.mts",
+    "collect:local": "bun scripts/collect-local.mts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1152.0",
+    "@aws-sdk/client-secrets-manager": "^3.1152.0",
+    "@aws-sdk/lib-dynamodb": "^3.1152.0",
+    "@sinclair/typebox": "^0.34.52",
+    "elysia": "^1.4.30",
+    "jose": "^6.2.12",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@types/bun": "^1.4.3",
+    "eslint": "latest",
+    "typescript": "6.0.3",
+    "typescript-eslint": "latest"
+  }
+}

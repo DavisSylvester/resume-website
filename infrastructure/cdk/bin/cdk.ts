@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
 import { CdkStack } from '../lib/cdk-stack';
+import { APPLICATION_TAG, loadPlatformConfig } from '../lib/naming';
 
 const app = new cdk.App();
-new CdkStack(app, 'CdkStack', {
+// Fails synth if prefix/account context is missing or the resolved account differs.
+const config = loadPlatformConfig(app);
+const stack = new CdkStack(app, 'CdkStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -21,3 +24,7 @@ new CdkStack(app, 'CdkStack', {
  
 
 });
+
+// Stack-level tags: every taggable resource (existing ones update in place).
+cdk.Tags.of(stack).add("application", APPLICATION_TAG);
+cdk.Tags.of(stack).add("environment", config.envName);
