@@ -1,0 +1,6 @@
+// Layout and chart chrome live in src/styles/_activity.scss: d3 renders SVG at runtime,
+// outside this component's view encapsulation.
+:host {
+  display: block;
+  width: 100%;
+}

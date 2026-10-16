@@ -1,0 +1,20 @@
+<ul class="viz-legend" aria-label="Series">
+  <li><span class="viz-legend__swatch" style="background: var(--div-pos)"></span><span>Lines added</span></li>
+  <li><span class="viz-legend__swatch" style="background: var(--div-neg)"></span><span>Lines deleted</span></li>
+</ul>
+<div #canvas class="viz-canvas" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <div class="viz-table-scroll">
+    <table class="viz-table">
+      <caption>Lines changed per week in public repositories</caption>
+      <thead>
+        <tr><th scope="col">Week of</th><th scope="col">Added</th><th scope="col">Deleted</th></tr>
+      </thead>
+      <tbody>
+        @for (w of data(); track w.week) {
+          <tr><th scope="row">{{ weekLabel(w.week) }}</th><td>{{ fmt.format(w.additions) }}</td><td>{{ fmt.format(w.deletions) }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

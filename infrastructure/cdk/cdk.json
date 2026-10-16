@@ -1,5 +1,6 @@
 {
   "app": "npx ts-node --prefer-ts-exts bin/cdk.ts",
+  "profile": "dsylvesteriii",
   "watch": {
     "include": [
       "**"
@@ -17,6 +18,9 @@
     ]
   },
   "context": {
+    "resourcePrefix": "gh-app",
+    "expectedAccount": "318205107378",
+    "env": "prod",
     "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": true,
     "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": true,
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,

@@ -1,0 +1,14 @@
+<div #canvas class="viz-canvas" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <table class="viz-table">
+    <caption>Commits by language</caption>
+    <thead>
+      <tr><th scope="col">Language</th><th scope="col">Commits</th><th scope="col">Share</th></tr>
+    </thead>
+    <tbody>
+      @for (r of rows(); track r.name) {
+        <tr><th scope="row">{{ r.name }}</th><td>{{ fmt.format(r.commits) }}</td><td>{{ pct.format(r.share) }}</td></tr>
+      }
+    </tbody>
+  </table>
+}

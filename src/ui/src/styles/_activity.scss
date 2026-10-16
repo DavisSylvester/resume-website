@@ -1,0 +1,369 @@
+// Activity page + d3 chart chrome. Global (not component) styles because d3 builds the
+// SVG at runtime, outside Angular's view encapsulation.
+//
+// Colors: the dataviz reference palette's dark-mode slots, validated against this site's
+// card surface (#231638): lightness band, chroma floor, CVD and normal-vision separation,
+// and >= 3:1 contrast all pass. The site is dark-only, so there is no light variant.
+
+.viz-root {
+  color-scheme: dark;
+  --viz-surface: #231638;
+  --viz-text: #f2e9ff;
+  --viz-text-2: #cabbe3;
+  --viz-muted: #a99cc4;
+  --viz-grid: rgba(255, 255, 255, 0.08);
+  --viz-axis: rgba(255, 255, 255, 0.2);
+  --viz-border: rgba(255, 255, 255, 0.1);
+
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+
+  // Sequential: one hue (blue), dim to bright, so more reads as more on a dark surface.
+  --seq-lo: #1c5cab;
+  --seq-hi: #b7d3f6;
+
+  // Diverging: blue (added) vs red (deleted) around a neutral baseline.
+  --div-pos: #3987e5;
+  --div-neg: #e66767;
+
+  --status-good: #0ca30c;
+}
+
+.activity-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 16px 3rem;
+  box-sizing: border-box;
+  color: var(--viz-text);
+  font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.25rem;
+    color: var(--viz-text);
+  }
+}
+
+.act-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--viz-text-2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--status-good);
+  box-shadow: 0 0 0 0 rgba(12, 163, 12, 0.6);
+  animation: live-pulse 2s infinite;
+}
+
+@keyframes live-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(12, 163, 12, 0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(12, 163, 12, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(12, 163, 12, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
+}
+
+.act-meta,
+.act-loading,
+.act-footnote {
+  color: var(--viz-muted);
+  font-size: 0.9rem;
+}
+
+.act-error {
+  color: var(--viz-text);
+  background: rgba(230, 103, 103, 0.15);
+  border: 1px solid rgba(230, 103, 103, 0.4);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+}
+
+.act-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 200ms ease;
+
+  &.is-refreshing { opacity: 0.6; }
+}
+
+.viz-card {
+  background: var(--viz-surface);
+  border: 1px solid var(--viz-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.viz-sub {
+  margin: 0 0 1rem;
+  color: var(--viz-text-2);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+// Hero: one >= 48px figure, proportional digits, same sans as everything else.
+.act-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+  align-items: flex-end;
+}
+
+.hero-main,
+.hero-private {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.hero-main { flex: 1 1 260px; }
+.hero-private { flex: 1 1 320px; }
+
+.hero-value {
+  font-size: clamp(3.5rem, 10vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hero-label,
+.private-label {
+  color: var(--viz-text-2);
+}
+
+.private-value {
+  font-size: clamp(2.25rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.private-note {
+  color: var(--viz-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+// Meter: the unfilled track is a lighter step of the same ramp.
+.meter {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(57, 135, 229, 0.22);
+  overflow: hidden;
+  margin: 0.5rem 0;
+
+  &__fill {
+    display: block;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--series-1);
+  }
+}
+
+.act-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .stat-tile {
+    flex: 1 1 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+.stat-label { color: var(--viz-text-2); font-size: 0.9rem; }
+.stat-value { font-size: 1.9rem; font-weight: 700; }
+.stat-note { color: var(--viz-muted); font-size: 0.85rem; }
+
+.act-toolbar {
+  display: flex;
+  gap: 0;
+  align-self: flex-start;
+  border: 1px solid var(--viz-border);
+  border-radius: 10px;
+  overflow: hidden;
+
+  button {
+    background: transparent;
+    color: var(--viz-text-2);
+    border: 0;
+    padding: 0.5rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &.is-active {
+      background: var(--accent, #5c2e91);
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--series-1);
+      outline-offset: -2px;
+    }
+  }
+}
+
+// Flexbox grid: the clock spans two columns beside the live feed, wide charts span all three.
+.act-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  > .viz-card { flex: 1 1 300px; }
+  > .act-span-2 { flex: 2 1 560px; }
+  > .act-span-3 { flex: 1 1 100%; }
+}
+
+// Live feed
+.live-card { max-height: 760px; display: flex; flex-direction: column; }
+
+.live-empty { color: var(--viz-muted); }
+
+.live-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  li {
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid var(--viz-border);
+    transition: background 600ms ease, border-color 600ms ease;
+
+    &.is-fresh {
+      background: rgba(57, 135, 229, 0.14);
+      border-color: rgba(57, 135, 229, 0.5);
+    }
+  }
+
+  a { color: var(--viz-text); font-weight: 700; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  time { color: var(--viz-muted); font-size: 0.8rem; white-space: nowrap; }
+}
+
+.live-row { display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline; }
+.live-private { font-weight: 700; color: var(--viz-text-2); }
+.live-meta { color: var(--viz-text-2); font-size: 0.85rem; margin-top: 0.15rem; }
+
+.live-msg {
+  color: var(--viz-muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  overflow-wrap: anywhere;
+}
+
+// Chart chrome
+.viz-canvas {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+
+  svg { display: block; overflow: visible; }
+
+  &--center svg { margin: 0 auto; }
+  &--scroll { overflow-x: auto; }
+}
+
+.viz-axis-label {
+  fill: var(--viz-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.viz-bar-label { fill: var(--viz-text-2); font-size: 13px; }
+.viz-bar-value { fill: var(--viz-text); font-size: 13px; font-weight: 600; }
+.viz-center-value { fill: var(--viz-text); font-size: 30px; font-weight: 700; }
+.viz-center-label { fill: var(--viz-muted); font-size: 12px; }
+
+.viz-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--viz-text-2);
+
+  li { display: flex; align-items: center; gap: 0.4rem; }
+  a { color: var(--viz-text-2); text-decoration: none; }
+  a:hover { color: var(--viz-text); text-decoration: underline; }
+
+  &__swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  &__value { color: var(--viz-muted); font-variant-numeric: tabular-nums; }
+}
+
+.viz-tooltip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  min-width: 140px;
+  max-width: 260px;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  background: #120a20;
+  border: 1px solid var(--viz-border);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  font-size: 0.8rem;
+  color: var(--viz-text-2);
+
+  &__title { color: var(--viz-muted); margin-bottom: 0.3rem; }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+
+    strong { color: var(--viz-text); font-size: 0.95rem; }
+    span:last-child { overflow: hidden; text-overflow: ellipsis; }
+  }
+
+  // Line key, not a box.
+  &__key { width: 12px; height: 2px; border-radius: 1px; flex: none; }
+}
+
+.viz-table-scroll { overflow-x: auto; }
+
+.viz-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  color: var(--viz-text-2);
+
+  caption { text-align: left; color: var(--viz-muted); padding-bottom: 0.5rem; }
+  th, td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--viz-grid); text-align: right; }
+  th[scope='row'], thead th:first-child { text-align: left; color: var(--viz-text); }
+  td { font-variant-numeric: tabular-nums; }
+
+  &--dense th, &--dense td { padding: 0.25rem 0.35rem; }
+}

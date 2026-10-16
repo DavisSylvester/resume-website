@@ -8,6 +8,8 @@ import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 // Import local build of aws-constructs to use the updated certificate logic
 import { SpaCFRoute53 } from "@sylvesterllc/aws-constructs";
+import { ActivityApi } from "./activity-api";
+import { loadPlatformConfig } from "./naming";
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -88,5 +90,7 @@ export class CdkStack extends cdk.Stack {
       hostedZoneId: "Z084603532M2PA5E3QFC8",
     });
     new CfnOutput(this, "ApiUrl", { value: api.url! });
+
+    new ActivityApi(this, "ActivityApi", { config: loadPlatformConfig(this), api });
   }
 }

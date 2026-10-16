@@ -1,0 +1,28 @@
+<div #canvas class="viz-canvas viz-canvas--scroll" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <div class="viz-table-scroll">
+    <table class="viz-table viz-table--dense">
+      <caption>Public commits by weekday and hour</caption>
+      <thead>
+        <tr>
+          <th scope="col">Day</th>
+          @for (h of hours; track h) {
+            <th scope="col">{{ hourLabel(h) }}</th>
+          }
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.day) {
+          <tr>
+            <th scope="row">{{ row.day }}</th>
+            @for (c of row.cells; track $index) {
+              <td>{{ c }}</td>
+            }
+            <td>{{ row.total }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

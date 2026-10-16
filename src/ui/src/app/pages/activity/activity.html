@@ -1,0 +1,139 @@
+<div class="activity-page viz-root">
+  <header class="act-header">
+    <p class="act-eyebrow">
+      @if (data.source() === DataSource.Live) {
+        <span class="live-dot" aria-hidden="true"></span> Live from GitHub
+      } @else {
+        GitHub activity
+      }
+    </p>
+    <h1>What I've shipped in the last 12 months</h1>
+    @if (snap(); as s) {
+      <p class="act-meta">
+        Updated {{ updated() }}
+        @if (data.source() === DataSource.Sample) {
+          · showing a recent snapshot
+        }
+      </p>
+    }
+  </header>
+
+  @if (data.source() === DataSource.Error) {
+    <p class="act-error" role="alert">Activity data could not be loaded. Please try again shortly.</p>
+  }
+
+  @if (snap(); as s) {
+    <div class="act-body" [class.is-refreshing]="data.refreshing()">
+      <section class="act-hero viz-card" aria-label="Headline numbers">
+        <div class="hero-main">
+          <span class="hero-value">{{ fmt.format(s.totals.contributions) }}</span>
+          <span class="hero-label">contributions in the last 12 months</span>
+        </div>
+        <div class="hero-private">
+          <span class="private-value">{{ fmt.format(s.totals.privateContributions) }}</span>
+          <span class="private-label">in private, enterprise codebases</span>
+          <div
+            class="meter"
+            role="meter"
+            aria-label="Share of contributions in private repositories"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="(privateShare() * 100).toFixed(0)"
+          >
+            <span class="meter__fill" [style.width.%]="privateShare() * 100"></span>
+          </div>
+          <span class="private-note">{{ (privateShare() * 100).toFixed(0) }}% of all my work is private client and employer code. GitHub counts it; the repositories stay confidential.</span>
+        </div>
+      </section>
+
+      <section class="act-tiles" aria-label="Key figures">
+        @for (t of tiles(); track t.label) {
+          <div class="viz-card stat-tile">
+            <span class="stat-label">{{ t.label }}</span>
+            <span class="stat-value">{{ t.value }}</span>
+            <span class="stat-note">{{ t.note }}</span>
+          </div>
+        }
+      </section>
+
+      <div class="act-toolbar" role="group" aria-label="Display">
+        <button type="button" [class.is-active]="!tableView()" [attr.aria-pressed]="!tableView()" (click)="tableView.set(false)">Charts</button>
+        <button type="button" [class.is-active]="tableView()" [attr.aria-pressed]="tableView()" (click)="tableView.set(true)">Tables</button>
+      </div>
+
+      <div class="act-grid">
+        <section class="viz-card act-span-2">
+          <h2>The year as a clock</h2>
+          <p class="viz-sub">Each spoke is one day, private work included. Longer, brighter spokes mean more contributions. {{ busiestDay() }}</p>
+          <app-radial-calendar [data]="s.calendar" [tableView]="tableView()" />
+        </section>
+
+        <section class="viz-card live-card" aria-live="polite">
+          <h2>Latest pushes</h2>
+          @if (data.source() === DataSource.Live) {
+            <p class="viz-sub">Arrives within seconds through a GitHub App webhook.</p>
+            @if (data.liveEvents().length === 0) {
+              <p class="live-empty">No pushes yet in the last 30 days.</p>
+            }
+            <ol class="live-feed">
+              @for (e of data.liveEvents(); track e.id) {
+                <li [class.is-fresh]="isFresh(e)">
+                  <div class="live-row">
+                    @if (e.url) {
+                      <a [href]="e.url" target="_blank" rel="noopener">{{ e.repo }}</a>
+                    } @else {
+                      <span class="live-private">{{ e.repo }}</span>
+                    }
+                    <time [attr.datetime]="e.receivedAt">{{ ago(e.receivedAt) }}</time>
+                  </div>
+                  <div class="live-meta">
+                    {{ e.commitCount }} {{ e.commitCount === 1 ? 'commit' : 'commits' }}
+                    @if (e.branch) { to {{ e.branch }} }
+                    @if (e.language) { · {{ e.language }} }
+                  </div>
+                  @for (m of e.messages; track $index) {
+                    <div class="live-msg">{{ m }}</div>
+                  }
+                </li>
+              }
+            </ol>
+          } @else {
+            <p class="viz-sub">The live feed appears when the activity API is reachable.</p>
+          }
+        </section>
+
+        <section class="viz-card act-span-3">
+          <h2>Where the commits went</h2>
+          <p class="viz-sub">Public commits per week, one stream per repository. Hover for the weekly breakdown.</p>
+          <app-repo-stream [data]="s.repos" [login]="s.login" [tableView]="tableView()" />
+        </section>
+
+        <section class="viz-card act-span-2">
+          <h2>When I ship</h2>
+          <p class="viz-sub">Public commits by weekday and hour ({{ s.timezone }}). {{ peakRhythm() }}</p>
+          <app-rhythm-heatmap [data]="s.hourOfWeek" [tableView]="tableView()" />
+        </section>
+
+        <section class="viz-card">
+          <h2>Languages</h2>
+          <p class="viz-sub">Commits split by each repository's code mix.</p>
+          <app-language-bars [data]="s.languages" [tableView]="tableView()" />
+        </section>
+
+        <section class="viz-card act-span-3">
+          <h2>Code written and refactored</h2>
+          <p class="viz-sub">Lines added and deleted per week in public repositories.</p>
+          <app-churn-chart [data]="s.churn" [tableView]="tableView()" />
+        </section>
+      </div>
+
+      <p class="act-footnote">
+        Data comes from a GitHub App installed on my account. Contribution totals include private repositories, which GitHub
+        reports only as counts, so no private code, repository names or commit messages are shown. Commit times and line
+        counts cover public repositories only.
+      </p>
+    </div>
+  } @else if (data.source() === DataSource.Loading) {
+    <p class="act-loading">Loading activity…</p>
+  }
+</div>

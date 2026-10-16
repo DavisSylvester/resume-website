@@ -27,7 +27,7 @@ import { NgIf } from '@angular/common';
   ],
   template: `
     <app-navbar></app-navbar>
-    <main class="container" *ngIf="!isPrint()">
+    <main class="container" *ngIf="!isStandalonePage()">
       <section id="hero" class="section">
         <app-hero></app-hero>
       </section>
@@ -55,7 +55,7 @@ import { NgIf } from '@angular/common';
 export class App {
   protected readonly title = signal('davis-resume');
   constructor(private router: Router) {}
-  isPrint() {
-    return this.router.url.startsWith('/print');
+  isStandalonePage() {
+    return this.router.url.startsWith('/print') || this.router.url.startsWith('/activity');
   }
 }
