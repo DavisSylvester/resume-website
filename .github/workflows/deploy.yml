@@ -1,0 +1,136 @@
+# Tests every push and pull request; deploys to AWS from main.
+#
+# AWS access is keyless: the deploy job requests a GitHub OIDC token and assumes
+# gh-app-github-deploy-prod (infrastructure/cdk/lib/cicd-stack.ts), whose trust policy
+# accepts only this repository's main branch. That role can only assume the CDK bootstrap
+# roles, upload to the two site buckets, and invalidate their CloudFront distributions.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time; a newer push waits rather than cancelling a half-finished deploy.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: '318205107378'
+  DEPLOY_ROLE_ARN: arn:aws:iam::318205107378:role/gh-app-github-deploy-prod
+  # cdk.json and deploy-ui.sh pin this profile name; CI writes the OIDC session into it.
+  AWS_PROFILE_NAME: dsylvesteriii
+  BUN_VERSION: 1.4.3
+  NODE_VERSION: '22'
+
+jobs:
+  test:
+    name: Test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Activity API - install
+        working-directory: src/api/activity
+        run: bun install --frozen-lockfile
+
+      - name: Activity API - type-check
+        working-directory: src/api/activity
+        run: bunx tsc --noEmit -p .
+
+      - name: Activity API - lint
+        working-directory: src/api/activity
+        run: bunx eslint .
+
+      - name: Activity API - unit tests
+        working-directory: src/api/activity
+        run: bun test
+
+      - name: UI - install and build
+        working-directory: src/ui
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
+      - name: Infrastructure - install and type-check
+        working-directory: infrastructure/cdk
+        run: |
+          bun install --frozen-lockfile
+          bunx tsc --noEmit
+
+  deploy:
+    name: Deploy to AWS
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write # OIDC token for AWS
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Assume the deploy role (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          role-session-name: resume-website-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Expose the session as the pinned AWS profile
+        run: |
+          aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile "$AWS_PROFILE_NAME"
+          aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile "$AWS_PROFILE_NAME"
+          aws configure set aws_session_token "$AWS_SESSION_TOKEN" --profile "$AWS_PROFILE_NAME"
+          aws configure set region "$AWS_REGION" --profile "$AWS_PROFILE_NAME"
+          account="$(aws sts get-caller-identity --profile "$AWS_PROFILE_NAME" --query Account --output text)"
+          if [ "$account" != "$AWS_ACCOUNT_ID" ]; then
+            echo "::error::Resolved account $account, expected $AWS_ACCOUNT_ID"
+            exit 1
+          fi
+
+      - name: Deploy infrastructure and APIs (CDK)
+        working-directory: infrastructure/cdk
+        run: |
+          bun install --frozen-lockfile
+          npx cdk deploy CdkStack --require-approval never --progress events
+
+      - name: Publish the site to S3 and invalidate CloudFront
+        env:
+          AWS_PROFILE: ${{ env.AWS_PROFILE_NAME }}
+        run: |
+          (cd src/ui && bun install --frozen-lockfile)
+          sh src/ui/scripts/deploy-ui.sh
+
+      - name: Smoke test
+        run: |
+          set -e
+          api="https://etgzi1pkz8.execute-api.us-east-1.amazonaws.com"
+          curl -fsS "$api/activity/health"
+          curl -fsS "$api/activity/ready"
+          curl -fsS -o /dev/null -w "www.dsylvester.io/activity %{http_code}\n" https://www.dsylvester.io/activity
+          curl -fsS -o /dev/null -w "www.dsylvester.ai/activity %{http_code}\n" https://www.dsylvester.ai/activity

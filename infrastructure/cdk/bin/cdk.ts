@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
 import { CdkStack } from '../lib/cdk-stack';
+import { CicdStack } from '../lib/cicd-stack';
 import { APPLICATION_TAG, loadPlatformConfig } from '../lib/naming';
 
 const app = new cdk.App();
@@ -28,3 +29,10 @@ const stack = new CdkStack(app, 'CdkStack', {
 // Stack-level tags: every taggable resource (existing ones update in place).
 cdk.Tags.of(stack).add("application", APPLICATION_TAG);
 cdk.Tags.of(stack).add("environment", config.envName);
+
+const cicdStack = new CicdStack(app, 'GhAppCicdStack', {
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+  config,
+});
+cdk.Tags.of(cicdStack).add("application", APPLICATION_TAG);
+cdk.Tags.of(cicdStack).add("environment", config.envName);
