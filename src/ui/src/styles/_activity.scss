@@ -403,6 +403,7 @@
 
 .ins-tile {
   flex: 1 1 150px;
+  box-sizing: border-box; // so two half-width tiles fit side by side with their padding
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
