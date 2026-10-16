@@ -1,4 +1,5 @@
 import { Type } from '@sinclair/typebox';
+import { InsightsSchema } from './insights.schema.mjs';
 
 /** One day on the contribution calendar. `count` includes private (restricted) work. */
 export const CalendarDaySchema = Type.Object({
@@ -68,4 +69,5 @@ export const ActivitySnapshotSchema = Type.Object({
   /** 7 x 24 grid of public commits: [weekday 0=Mon][hour 0-23], in `timezone`. */
   hourOfWeek: Type.Array(Type.Array(Type.Integer({ minimum: 0 }))),
   churn: Type.Array(ChurnWeekSchema),
+  insights: Type.Optional(InsightsSchema),
 });

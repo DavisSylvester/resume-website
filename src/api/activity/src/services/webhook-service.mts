@@ -3,16 +3,18 @@ import { Value } from '@sinclair/typebox/value';
 import type { Logger } from 'winston';
 import { WebhookError, WebhookErrorCode } from '../errors/index.mjs';
 import { PushPayloadSchema } from '../schemas/index.mjs';
-import { fail, ok, RefreshDepth, WebhookOutcome } from '../types/index.mjs';
+import { ledgerRepoKey } from './insights/ledger.mjs';
+import { fail, ok, WebhookOutcome } from '../types/index.mjs';
 import type {
   ActivityRepository,
-  ActivityService,
   AppConfig,
+  AsyncTrigger,
+  InsightsService,
   CredentialsProvider,
   WebhookRequest,
   WebhookService,
 } from '../interfaces/index.mjs';
-import type { AppCredentials, LiveEvent, PushPayload, Result } from '../types/index.mjs';
+import type { AppCredentials, LiveEvent, PendingCommit, PushPayload, Result } from '../types/index.mjs';
 
 const MAX_MESSAGES: number = 5;
 const MAX_MESSAGE_LENGTH: number = 120;
@@ -55,11 +57,24 @@ export const toLiveEvent = (payload: PushPayload, deliveryId: string, receivedAt
   };
 };
 
+/** The pushed commits to classify for insights. The real repo name is kept only until classification. */
+export const toPendingCommits = (payload: PushPayload, receivedAt: Date): PendingCommit[] =>
+  payload.commits
+    .filter((c: PushPayload['commits'][number]): boolean => c.distinct !== false)
+    .map((c: PushPayload['commits'][number]): PendingCommit => ({
+      sha: c.id,
+      repo: ledgerRepoKey(payload.repository.full_name, payload.repository.private, payload.repository.id ?? null),
+      isPrivate: payload.repository.private,
+      fullName: payload.repository.full_name,
+      queuedAt: receivedAt.toISOString(),
+    }));
+
 export class DefaultWebhookService implements WebhookService {
 
   private readonly credentials: CredentialsProvider;
   private readonly repository: ActivityRepository;
-  private readonly activityService: ActivityService;
+  private readonly insights: InsightsService;
+  private readonly trigger: AsyncTrigger;
   private readonly config: AppConfig;
   private readonly logger: Logger;
   private readonly clock: () => Date;
@@ -67,14 +82,16 @@ export class DefaultWebhookService implements WebhookService {
   public constructor(
     credentials: CredentialsProvider,
     repository: ActivityRepository,
-    activityService: ActivityService,
+    insights: InsightsService,
+    trigger: AsyncTrigger,
     config: AppConfig,
     logger: Logger,
     clock: () => Date,
   ) {
     this.credentials = credentials;
     this.repository = repository;
-    this.activityService = activityService;
+    this.insights = insights;
+    this.trigger = trigger;
     this.config = config;
     this.logger = logger;
     this.clock = clock;
@@ -116,9 +133,11 @@ export class DefaultWebhookService implements WebhookService {
       return fail(new WebhookError(WebhookErrorCode.StorageFailed, 'Could not store event'));
     }
 
-    // Shallow refresh: one GraphQL call, debounced so a burst of pushes costs one call.
-    const refreshed: Result<unknown> = await this.activityService.refresh(RefreshDepth.Shallow, true);
-    if (!refreshed.ok) this.logger.warn('post-push refresh failed', { error: refreshed.error.message });
+    const queued: Result<void> = await this.insights.enqueue(toPendingCommits(body, this.clock()));
+    if (!queued.ok) this.logger.warn('failed to queue pushed commits', { error: queued.error.message });
+
+    // Heavy work (contributions refresh, commit classification) runs outside GitHub's 10 s webhook window.
+    await this.trigger.trigger();
     return ok(WebhookOutcome.Stored);
   }
 }

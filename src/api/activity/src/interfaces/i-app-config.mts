@@ -7,4 +7,6 @@ export interface AppConfig {
   refreshDebounceSeconds: number;
   logLevel: string;
   secretArn: string | null;
+  /** This Lambda's own name in AWS; null locally. */
+  functionName: string | null;
 }

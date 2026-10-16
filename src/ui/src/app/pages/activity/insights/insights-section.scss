@@ -1,0 +1,4 @@
+// Shared look lives in src/styles/_activity.scss (d3 output is outside view encapsulation).
+:host {
+  display: block;
+}

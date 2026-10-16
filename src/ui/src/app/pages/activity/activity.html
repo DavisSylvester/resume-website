@@ -127,6 +127,10 @@
         </section>
       </div>
 
+      @if (s.insights; as ins) {
+        <app-insights-section [insights]="ins" [tableView]="tableView()" />
+      }
+
       <p class="act-footnote">
         Data comes from a GitHub App installed on my account. Contribution totals include private repositories, which GitHub
         reports only as counts, so no private code, repository names or commit messages are shown. Commit times and line

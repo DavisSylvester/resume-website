@@ -143,6 +143,7 @@ export const buildSnapshot = (input: BuildInput): ActivitySnapshot => {
       ),
   );
   const prev: ActivitySnapshot | null = input.previous;
+  const carried: Pick<ActivitySnapshot, 'insights'> = prev?.insights ? { insights: prev.insights } : {};
   const repos: RepoContribution[] = c.commitContributionsByRepository;
   const commitsWhere = (isPrivate: boolean): number =>
     repos
@@ -174,6 +175,7 @@ export const buildSnapshot = (input: BuildInput): ActivitySnapshot => {
     languages: toLanguages(c.commitContributionsByRepository),
     hourOfWeek: prev?.hourOfWeek ?? emptyHourGrid(),
     churn: prev?.churn ?? [],
+    ...carried,
   };
 };
 

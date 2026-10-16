@@ -34,9 +34,10 @@ export class TokenGitHubClient implements GitHubClient {
 
   public async rest<T>(path: string): Promise<Result<RestResponse<T>>> {
     const res: Response = await fetch(`https://api.github.com${path}`, { headers: this.headers() });
-    if (res.status === 202 || res.status === 204) return ok({ status: res.status, data: null });
+    const rateRemaining: number | null = res.headers.has('x-ratelimit-remaining') ? Number(res.headers.get('x-ratelimit-remaining')) : null;
+    if (res.status === 202 || res.status === 204) return ok({ status: res.status, data: null, rateRemaining });
     if (!res.ok) return fail(new GitHubError(res.status, `GET ${path} -> HTTP ${res.status}`));
-    return ok({ status: res.status, data: (await res.json()) as T });
+    return ok({ status: res.status, data: (await res.json()) as T, rateRemaining });
   }
 
   private headers(): Record<string, string> {

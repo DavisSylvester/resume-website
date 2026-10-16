@@ -1,10 +1,11 @@
 import { Construct } from "constructs";
 import * as path from "path";
-import { CfnOutput, Duration, RemovalPolicy, SecretValue } from "aws-cdk-lib";
+import { CfnOutput, Duration, RemovalPolicy, SecretValue, Stack } from "aws-cdk-lib";
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as events from "aws-cdk-lib/aws-events";
+import * as iam from "aws-cdk-lib/aws-iam";
 import * as targets from "aws-cdk-lib/aws-events-targets";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as logs from "aws-cdk-lib/aws-logs";
@@ -76,8 +77,10 @@ export class ActivityApi extends Construct {
         path.resolve(__dirname, "..", "..", "..", "src", "api", "activity"),
         { platform: Platform.LINUX_AMD64 },
       ),
-      memorySize: 512,
-      timeout: Duration.seconds(60),
+      // The hourly run backfills the insights ledger (hundreds of GitHub calls); API requests
+      // only read the snapshot, and API Gateway still caps them at 30 s.
+      memorySize: 1024,
+      timeout: Duration.seconds(300),
       logGroup,
       environment: {
         GITHUB_LOGIN: "DavisSylvester",
@@ -91,6 +94,16 @@ export class ActivityApi extends Construct {
 
     this.table.grantReadWriteData(this.fn);
     this.secret.grantRead(this.fn);
+
+    // The webhook hands heavy work to an async invoke of this same function. The ARN is built
+    // from the name (not this.fn.functionArn) to avoid a self-referencing dependency cycle.
+    const { region, account } = Stack.of(this);
+    this.fn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["lambda:InvokeFunction"],
+        resources: [`arn:aws:lambda:${region}:${account}:function:${functionName}`],
+      }),
+    );
 
     // More specific than the existing /{proxy+} route, so these win.
     const integration = new HttpLambdaIntegration("ActivityIntegration", this.fn);

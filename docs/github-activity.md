@@ -146,6 +146,18 @@ cd src/ui && bun run build
 
 The API pins TypeScript 6.0.3, not 7.0.2. typescript-eslint 8.71 supports TypeScript below 6.1 only, and lint must pass.
 
+## Engineering insights
+
+The page also has an "Engineering insights" section with infrastructure as code by tool and cloud, a stack fingerprint, the commit-type mix, testing discipline, pull requests, CI/CD and a multi-year career arc. The design, data model, classification rules and budgets are in [activity-insights-plan.md](activity-insights-plan.md).
+
+- **How it works:** a commit ledger in DynamoDB holds one classified record per commit: line counts per file class and the commit type, with no messages or file names. Private commits are keyed by an opaque repository id.
+- **Backfill:** each hourly run classifies at most 300 new commits, so the first 12-month backfill takes several hours. The section header shows how many commits are still pending.
+- **Real time:** a push queues its commits, and the webhook asynchronously invokes the same Lambda to classify them, so the IaC figures move within seconds.
+- **Permissions:** private pull requests and private Actions runs need two extra App permissions. Until they are granted, those cards say "Public repositories only for now".
+  1. Open https://github.com/settings/apps/dsylvester-activity/permissions.
+  2. Set **Pull requests: Read-only** and **Actions: Read-only**, then save.
+  3. Accept the permission update on the installation: GitHub emails a link, and it also appears at https://github.com/settings/installations.
+
 ## Visual design
 
 Colors use the dark-mode slots of the dataviz reference palette, validated against the site's card surface `#231638`. The lightness, chroma, colorblind-separation and contrast checks all pass. Every chart has a table twin behind the Charts/Tables toggle, and tooltips set text with `textContent`.

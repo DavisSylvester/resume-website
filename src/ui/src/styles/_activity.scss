@@ -30,7 +30,9 @@
   --div-pos: #3987e5;
   --div-neg: #e66767;
 
+  // Status colors are reserved for outcome (CI runs) and always ship with a text label.
   --status-good: #0ca30c;
+  --status-critical: #d03b3b;
 }
 
 .activity-page {
@@ -366,4 +368,117 @@
   td { font-variant-numeric: tabular-nums; }
 
   &--dense th, &--dense td { padding: 0.25rem 0.35rem; }
+}
+
+// Engineering insights
+.insights {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  h3 {
+    font-size: 0.95rem;
+    margin: 0 0 0.5rem;
+    color: var(--viz-text-2);
+  }
+
+  .viz-card .meter { margin: 0 0 1rem; }
+}
+
+.insights__title {
+  font-size: clamp(1.4rem, 3vw, 1.8rem) !important;
+  margin: 0.5rem 0 0.25rem !important;
+}
+
+.ins-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  // Two per row inside a narrow card; tiles keep their natural height.
+  &--grid .ins-tile { flex: 1 1 calc(50% - 0.5rem); min-width: 130px; }
+}
+
+.ins-tile {
+  flex: 1 1 150px;
+  box-sizing: border-box; // so two half-width tiles fit side by side with their padding
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 10px;
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--viz-text-2);
+    font-size: 0.85rem;
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    small { font-size: 0.8rem; font-weight: 500; color: var(--viz-muted); }
+  }
+
+  &__note { color: var(--viz-muted); font-size: 0.8rem; }
+}
+
+.ins-split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-top: 1rem;
+
+  > div { flex: 1 1 260px; min-width: 0; }
+}
+
+.ins-providers {
+  color: var(--viz-text-2);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.stack-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.stack-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.4rem 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--viz-border);
+    background: rgba(57, 135, 229, 0.08);
+    color: var(--viz-text);
+    font-size: 0.85rem;
+  }
+
+  &__count {
+    min-width: 1.4rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--viz-text-2);
+    font-size: 0.75rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
 }

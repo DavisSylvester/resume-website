@@ -15,6 +15,7 @@ export const EnvSchema = Type.Object({
   ACTIVITY_TIMEZONE: Type.String({ default: 'America/Chicago' }),
   LIVE_EVENT_TTL_DAYS: Type.Integer({ minimum: 1, default: 30 }),
   REFRESH_DEBOUNCE_SECONDS: Type.Integer({ minimum: 0, default: 60 }),
+  AWS_LAMBDA_FUNCTION_NAME: Type.Optional(Type.String()),
   LOG_LEVEL: Type.Union(
     [Type.Literal('error'), Type.Literal('warn'), Type.Literal('info'), Type.Literal('debug')],
     { default: 'info' },

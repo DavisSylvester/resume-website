@@ -1,32 +1,28 @@
 {
   "login": "DavisSylvester",
-  "generatedAt": "2026-10-15T04:58:24.444Z",
-  "enrichedAt": "2026-10-15T04:58:24.444Z",
+  "generatedAt": "2026-10-16T03:31:07.959Z",
+  "enrichedAt": "2026-10-16T03:31:07.959Z",
   "timezone": "America/Chicago",
   "range": {
-    "from": "2025-10-15T04:58:24Z",
-    "to": "2026-10-15T04:58:24Z"
+    "from": "2025-10-16T03:31:07Z",
+    "to": "2026-10-16T03:31:07Z"
   },
   "totals": {
-    "contributions": 11320,
-    "privateContributions": 10896,
-    "publicCommits": 386,
-    "pullRequests": 24,
+    "contributions": 11374,
+    "privateContributions": 10941,
+    "publicCommits": 392,
+    "pullRequests": 27,
     "reviews": 0,
     "issues": 0,
     "reposContributedTo": 13,
-    "linesAdded": 348868,
-    "linesDeleted": 123541
+    "linesAdded": 0,
+    "linesDeleted": 0
   },
   "streak": {
-    "current": 117,
-    "longest": 117
+    "current": 118,
+    "longest": 118
   },
   "calendar": [
-    {
-      "date": "2025-10-15",
-      "count": 1
-    },
     {
       "date": "2025-10-16",
       "count": 0
@@ -1477,14 +1473,18 @@
     },
     {
       "date": "2026-10-13",
-      "count": 21
-    },
-    {
-      "date": "2026-10-14",
       "count": 23
     },
     {
+      "date": "2026-10-14",
+      "count": 36
+    },
+    {
       "date": "2026-10-15",
+      "count": 40
+    },
+    {
+      "date": "2026-10-16",
       "count": 0
     }
   ],
@@ -1605,9 +1605,9 @@
     {
       "name": "DavisSylvester/resume-website",
       "url": "https://github.com/DavisSylvester/resume-website",
-      "language": "HTML",
-      "languageColor": "#e34c26",
-      "commits": 12,
+      "language": "TypeScript",
+      "languageColor": "#3178c6",
+      "commits": 18,
       "weekly": [
         {
           "week": "2026-01-26",
@@ -1620,6 +1620,10 @@
         {
           "week": "2026-02-09",
           "count": 1
+        },
+        {
+          "week": "2026-10-12",
+          "count": 6
         }
       ]
     },
@@ -1723,25 +1727,25 @@
     {
       "name": "TypeScript",
       "color": "#3178c6",
-      "bytes": 3404521,
-      "commits": 354
+      "bytes": 3564113,
+      "commits": 364
     },
     {
       "name": "HTML",
       "color": "#e34c26",
-      "bytes": 156030,
-      "commits": 13
+      "bytes": 169224,
+      "commits": 11
     },
     {
       "name": "SCSS",
       "color": "#c6538c",
-      "bytes": 78911,
-      "commits": 8
+      "bytes": 87802,
+      "commits": 7
     },
     {
       "name": "JavaScript",
       "color": "#f1e05a",
-      "bytes": 53321,
+      "bytes": 52981,
       "commits": 4
     },
     {
@@ -1849,11 +1853,11 @@
       2,
       0,
       0,
-      1,
+      2,
       21,
-      1,
-      0,
-      1,
+      2,
+      2,
+      3,
       0
     ],
     [
@@ -1935,106 +1939,850 @@
       6
     ]
   ],
-  "churn": [
-    {
-      "week": "2025-11-10",
-      "additions": 12042,
-      "deletions": 4479
+  "churn": [],
+  "insights": {
+    "generatedAt": "2026-10-16T03:31:27.617Z",
+    "coverage": {
+      "commitsAnalyzed": 359,
+      "commitsPending": 0,
+      "reposScanned": 13,
+      "pullRequestsIncludePrivate": true,
+      "actionsIncludePrivate": true
     },
-    {
-      "week": "2025-11-17",
-      "additions": 46,
-      "deletions": 4
+    "iac": {
+      "tools": [
+        {
+          "tool": "cdk",
+          "commits": 69,
+          "linesAdded": 2916,
+          "linesDeleted": 905,
+          "reposTouched": 2,
+          "reposPresent": 2
+        }
+      ],
+      "monthly": [
+        {
+          "month": "2025-10",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2025-11",
+          "values": {
+            "cdk": 31
+          }
+        },
+        {
+          "month": "2025-12",
+          "values": {
+            "cdk": 1
+          }
+        },
+        {
+          "month": "2026-01",
+          "values": {
+            "cdk": 9
+          }
+        },
+        {
+          "month": "2026-02",
+          "values": {
+            "cdk": 18
+          }
+        },
+        {
+          "month": "2026-03",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2026-04",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2026-05",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2026-06",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2026-07",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2026-08",
+          "values": {
+            "cdk": 8
+          }
+        },
+        {
+          "month": "2026-09",
+          "values": {
+            "cdk": 0
+          }
+        },
+        {
+          "month": "2026-10",
+          "values": {
+            "cdk": 2
+          }
+        }
+      ],
+      "clouds": [
+        {
+          "cloud": "AWS",
+          "repos": 2
+        }
+      ],
+      "providers": []
     },
-    {
-      "week": "2025-12-01",
-      "additions": 348,
-      "deletions": 300
+    "stack": [
+      {
+        "name": "Bun",
+        "category": "Runtime",
+        "repos": 11
+      },
+      {
+        "name": "TypeScript",
+        "category": "Runtime",
+        "repos": 11
+      },
+      {
+        "name": "LangChain / LangGraph",
+        "category": "Data & AI",
+        "repos": 7
+      },
+      {
+        "name": "Angular",
+        "category": "Frontend",
+        "repos": 5
+      },
+      {
+        "name": "Node.js",
+        "category": "Runtime",
+        "repos": 5
+      },
+      {
+        "name": "Elysia",
+        "category": "Backend",
+        "repos": 4
+      },
+      {
+        "name": "MongoDB",
+        "category": "Data & AI",
+        "repos": 4
+      },
+      {
+        "name": "Ollama",
+        "category": "Data & AI",
+        "repos": 4
+      },
+      {
+        "name": "Playwright",
+        "category": "Testing",
+        "repos": 4
+      },
+      {
+        "name": "TypeBox",
+        "category": "Backend",
+        "repos": 3
+      },
+      {
+        "name": "Vitest",
+        "category": "Testing",
+        "repos": 3
+      },
+      {
+        "name": "AWS CDK",
+        "category": "Cloud & IaC",
+        "repos": 2
+      },
+      {
+        "name": "AWS SDK",
+        "category": "Cloud & IaC",
+        "repos": 2
+      },
+      {
+        "name": "Dart",
+        "category": "Runtime",
+        "repos": 2
+      },
+      {
+        "name": "Flutter",
+        "category": "Mobile",
+        "repos": 2
+      },
+      {
+        "name": "Jest",
+        "category": "Testing",
+        "repos": 2
+      },
+      {
+        "name": "Angular Material",
+        "category": "Frontend",
+        "repos": 1
+      },
+      {
+        "name": "Anthropic SDK",
+        "category": "Data & AI",
+        "repos": 1
+      },
+      {
+        "name": "Auth0",
+        "category": "Backend",
+        "repos": 1
+      },
+      {
+        "name": "D3",
+        "category": "Frontend",
+        "repos": 1
+      },
+      {
+        "name": "Electron",
+        "category": "Frontend",
+        "repos": 1
+      },
+      {
+        "name": "Express",
+        "category": "Backend",
+        "repos": 1
+      },
+      {
+        "name": "React",
+        "category": "Frontend",
+        "repos": 1
+      }
+    ],
+    "commitTypes": [
+      {
+        "type": "feat",
+        "count": 118
+      },
+      {
+        "type": "other",
+        "count": 114
+      },
+      {
+        "type": "fix",
+        "count": 31
+      },
+      {
+        "type": "merge",
+        "count": 31
+      },
+      {
+        "type": "docs",
+        "count": 29
+      },
+      {
+        "type": "chore",
+        "count": 15
+      },
+      {
+        "type": "test",
+        "count": 12
+      },
+      {
+        "type": "refactor",
+        "count": 6
+      },
+      {
+        "type": "ci",
+        "count": 2
+      },
+      {
+        "type": "build",
+        "count": 1
+      }
+    ],
+    "testing": {
+      "commitsTotal": 328,
+      "commitsTouchingTests": 123,
+      "testLinesAdded": 41545,
+      "codeLinesAdded": 101765,
+      "reposWithTests": 9,
+      "reposScanned": 13,
+      "testBytes": 1207054,
+      "codeBytes": 2895534
     },
-    {
-      "week": "2026-01-05",
-      "additions": 89,
-      "deletions": 0
+    "pullRequests": {
+      "opened": 1749,
+      "merged": 1673,
+      "medianHoursToMerge": 0.1,
+      "reviews": 0,
+      "monthly": [
+        {
+          "month": "2025-10",
+          "values": {
+            "opened": 12,
+            "merged": 10
+          }
+        },
+        {
+          "month": "2025-11",
+          "values": {
+            "opened": 28,
+            "merged": 29
+          }
+        },
+        {
+          "month": "2025-12",
+          "values": {
+            "opened": 13,
+            "merged": 10
+          }
+        },
+        {
+          "month": "2026-01",
+          "values": {
+            "opened": 32,
+            "merged": 30
+          }
+        },
+        {
+          "month": "2026-02",
+          "values": {
+            "opened": 3,
+            "merged": 3
+          }
+        },
+        {
+          "month": "2026-03",
+          "values": {
+            "opened": 19,
+            "merged": 18
+          }
+        },
+        {
+          "month": "2026-04",
+          "values": {
+            "opened": 19,
+            "merged": 18
+          }
+        },
+        {
+          "month": "2026-05",
+          "values": {
+            "opened": 76,
+            "merged": 70
+          }
+        },
+        {
+          "month": "2026-06",
+          "values": {
+            "opened": 124,
+            "merged": 112
+          }
+        },
+        {
+          "month": "2026-07",
+          "values": {
+            "opened": 213,
+            "merged": 199
+          }
+        },
+        {
+          "month": "2026-08",
+          "values": {
+            "opened": 447,
+            "merged": 431
+          }
+        },
+        {
+          "month": "2026-09",
+          "values": {
+            "opened": 554,
+            "merged": 539
+          }
+        },
+        {
+          "month": "2026-10",
+          "values": {
+            "opened": 209,
+            "merged": 208
+          }
+        }
+      ]
     },
-    {
-      "week": "2026-01-12",
-      "additions": 17073,
-      "deletions": 5191
+    "cicd": {
+      "runs": 368,
+      "succeeded": 188,
+      "failed": 180,
+      "deploys": 12,
+      "reposWithRuns": 10,
+      "weekly": [
+        {
+          "week": "2025-11-17",
+          "values": {
+            "succeeded": 2,
+            "failed": 26,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2025-11-24",
+          "values": {
+            "succeeded": 0,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2025-12-08",
+          "values": {
+            "succeeded": 0,
+            "failed": 1,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-01-12",
+          "values": {
+            "succeeded": 0,
+            "failed": 1,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-01-19",
+          "values": {
+            "succeeded": 2,
+            "failed": 8,
+            "other": 0,
+            "deploys": 1
+          }
+        },
+        {
+          "week": "2026-02-02",
+          "values": {
+            "succeeded": 10,
+            "failed": 6,
+            "other": 0,
+            "deploys": 9
+          }
+        },
+        {
+          "week": "2026-02-16",
+          "values": {
+            "succeeded": 0,
+            "failed": 2,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-02-23",
+          "values": {
+            "succeeded": 0,
+            "failed": 1,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-03-02",
+          "values": {
+            "succeeded": 5,
+            "failed": 2,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-03-09",
+          "values": {
+            "succeeded": 10,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-03-23",
+          "values": {
+            "succeeded": 0,
+            "failed": 7,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-03-30",
+          "values": {
+            "succeeded": 0,
+            "failed": 10,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-04-06",
+          "values": {
+            "succeeded": 2,
+            "failed": 13,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-04-13",
+          "values": {
+            "succeeded": 25,
+            "failed": 33,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-04-20",
+          "values": {
+            "succeeded": 3,
+            "failed": 0,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-04-27",
+          "values": {
+            "succeeded": 4,
+            "failed": 1,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-05-04",
+          "values": {
+            "succeeded": 12,
+            "failed": 7,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-05-11",
+          "values": {
+            "succeeded": 3,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-05-18",
+          "values": {
+            "succeeded": 5,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-05-25",
+          "values": {
+            "succeeded": 3,
+            "failed": 0,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-06-01",
+          "values": {
+            "succeeded": 4,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-06-08",
+          "values": {
+            "succeeded": 4,
+            "failed": 1,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-06-15",
+          "values": {
+            "succeeded": 29,
+            "failed": 5,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-06-22",
+          "values": {
+            "succeeded": 5,
+            "failed": 0,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-06-29",
+          "values": {
+            "succeeded": 9,
+            "failed": 5,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-07-06",
+          "values": {
+            "succeeded": 6,
+            "failed": 1,
+            "other": 0,
+            "deploys": 2
+          }
+        },
+        {
+          "week": "2026-07-13",
+          "values": {
+            "succeeded": 16,
+            "failed": 0,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-07-20",
+          "values": {
+            "succeeded": 2,
+            "failed": 4,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-07-27",
+          "values": {
+            "succeeded": 2,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-08-03",
+          "values": {
+            "succeeded": 2,
+            "failed": 12,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-08-10",
+          "values": {
+            "succeeded": 2,
+            "failed": 2,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-08-17",
+          "values": {
+            "succeeded": 2,
+            "failed": 1,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-08-24",
+          "values": {
+            "succeeded": 2,
+            "failed": 0,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-08-31",
+          "values": {
+            "succeeded": 2,
+            "failed": 3,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-09-07",
+          "values": {
+            "succeeded": 2,
+            "failed": 4,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-09-14",
+          "values": {
+            "succeeded": 1,
+            "failed": 0,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-10-05",
+          "values": {
+            "succeeded": 12,
+            "failed": 2,
+            "other": 0,
+            "deploys": 0
+          }
+        },
+        {
+          "week": "2026-10-12",
+          "values": {
+            "succeeded": 0,
+            "failed": 4,
+            "other": 0,
+            "deploys": 0
+          }
+        }
+      ]
     },
-    {
-      "week": "2026-01-19",
-      "additions": 11211,
-      "deletions": 0
-    },
-    {
-      "week": "2026-01-26",
-      "additions": 77677,
-      "deletions": 73415
-    },
-    {
-      "week": "2026-02-02",
-      "additions": 5735,
-      "deletions": 19212
-    },
-    {
-      "week": "2026-03-02",
-      "additions": 37914,
-      "deletions": 13285
-    },
-    {
-      "week": "2026-03-23",
-      "additions": 67220,
-      "deletions": 2450
-    },
-    {
-      "week": "2026-03-30",
-      "additions": 36314,
-      "deletions": 1474
-    },
-    {
-      "week": "2026-04-06",
-      "additions": 49410,
-      "deletions": 2673
-    },
-    {
-      "week": "2026-04-20",
-      "additions": 2304,
-      "deletions": 0
-    },
-    {
-      "week": "2026-04-27",
-      "additions": 2615,
-      "deletions": 4
-    },
-    {
-      "week": "2026-05-18",
-      "additions": 495,
-      "deletions": 0
-    },
-    {
-      "week": "2026-06-08",
-      "additions": 10803,
-      "deletions": 116
-    },
-    {
-      "week": "2026-06-29",
-      "additions": 393,
-      "deletions": 0
-    },
-    {
-      "week": "2026-07-06",
-      "additions": 10446,
-      "deletions": 348
-    },
-    {
-      "week": "2026-08-03",
-      "additions": 148,
-      "deletions": 65
-    },
-    {
-      "week": "2026-09-28",
-      "additions": 6585,
-      "deletions": 525
+    "career": {
+      "joinedYear": 2011,
+      "years": [
+        {
+          "year": 2011,
+          "contributions": 1,
+          "privateContributions": 0,
+          "commits": 0,
+          "pullRequests": 0
+        },
+        {
+          "year": 2012,
+          "contributions": 0,
+          "privateContributions": 0,
+          "commits": 0,
+          "pullRequests": 0
+        },
+        {
+          "year": 2013,
+          "contributions": 0,
+          "privateContributions": 0,
+          "commits": 0,
+          "pullRequests": 0
+        },
+        {
+          "year": 2014,
+          "contributions": 1,
+          "privateContributions": 0,
+          "commits": 0,
+          "pullRequests": 0
+        },
+        {
+          "year": 2015,
+          "contributions": 32,
+          "privateContributions": 1,
+          "commits": 25,
+          "pullRequests": 0
+        },
+        {
+          "year": 2016,
+          "contributions": 48,
+          "privateContributions": 0,
+          "commits": 45,
+          "pullRequests": 0
+        },
+        {
+          "year": 2017,
+          "contributions": 7,
+          "privateContributions": 0,
+          "commits": 5,
+          "pullRequests": 0
+        },
+        {
+          "year": 2018,
+          "contributions": 186,
+          "privateContributions": 34,
+          "commits": 140,
+          "pullRequests": 0
+        },
+        {
+          "year": 2019,
+          "contributions": 164,
+          "privateContributions": 142,
+          "commits": 15,
+          "pullRequests": 2
+        },
+        {
+          "year": 2020,
+          "contributions": 600,
+          "privateContributions": 600,
+          "commits": 0,
+          "pullRequests": 0
+        },
+        {
+          "year": 2021,
+          "contributions": 407,
+          "privateContributions": 405,
+          "commits": 0,
+          "pullRequests": 0
+        },
+        {
+          "year": 2022,
+          "contributions": 525,
+          "privateContributions": 419,
+          "commits": 91,
+          "pullRequests": 2
+        },
+        {
+          "year": 2023,
+          "contributions": 308,
+          "privateContributions": 194,
+          "commits": 98,
+          "pullRequests": 1
+        },
+        {
+          "year": 2024,
+          "contributions": 1277,
+          "privateContributions": 1224,
+          "commits": 38,
+          "pullRequests": 5
+        },
+        {
+          "year": 2025,
+          "contributions": 2296,
+          "privateContributions": 2233,
+          "commits": 45,
+          "pullRequests": 13
+        },
+        {
+          "year": 2026,
+          "contributions": 10464,
+          "privateContributions": 10076,
+          "commits": 357,
+          "pullRequests": 17
+        }
+      ]
     }
-  ]
+  }
 }
