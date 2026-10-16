@@ -2,13 +2,16 @@ import { createHmac } from 'node:crypto';
 import { describe, expect, test } from 'bun:test';
 import { InMemoryActivityRepository } from '../src/repositories/in-memory-activity-repository.mjs';
 import { DefaultActivityService } from '../src/services/activity-service.mjs';
-import { DefaultWebhookService, toLiveEvent, verifySignature } from '../src/services/webhook-service.mjs';
+import { DefaultWebhookService, toLiveEvent, toPendingCommits, verifySignature } from '../src/services/webhook-service.mjs';
+import { InlineTrigger } from '../src/clients/async-triggers.mjs';
+import { InMemoryInsightsRepository } from '../src/repositories/in-memory-insights-repository.mjs';
+import { DefaultInsightsService } from '../src/services/insights/insights-service.mjs';
 import { toAppConfig } from '../src/config/load-config.mjs';
 import { ok, WebhookOutcome } from '../src/types/index.mjs';
-import type { ContributionCollector, CredentialsProvider, WebhookRequest } from '../src/interfaces/index.mjs';
+import type { ActivityService, ContributionCollector, CredentialsProvider, WebhookRequest } from '../src/interfaces/index.mjs';
 import type { DefaultWebhookService as WebhookServiceType } from '../src/services/webhook-service.mjs';
 import type { ActivitySnapshot, LiveEvent, PushPayload } from '../src/types/index.mjs';
-import { fixedClock, sampleSnapshot, silentLogger, testEnv } from './helpers.mjs';
+import { fakeInsightsSource, fixedClock, sampleSnapshot, silentLogger, testEnv } from './helpers.mjs';
 
 const SECRET: string = 'a-very-secret-webhook-key';
 const sign = (body: string, secret: string = SECRET): string =>
@@ -31,6 +34,8 @@ const payload = (overrides: Partial<PushPayload> = {}): PushPayload => ({
 });
 
 interface Harness {
+  insightsRepo: InMemoryInsightsRepository;
+  fetched: string[];
   repository: InMemoryActivityRepository;
   service: WebhookServiceType;
   collects: () => number;
@@ -50,9 +55,17 @@ const setup = (): Harness => {
   };
   const config = toAppConfig(testEnv());
   const clock = fixedClock('2026-10-14T15:00:00Z');
-  const activity = new DefaultActivityService(repository, collector, config, silentLogger(), clock);
-  const service = new DefaultWebhookService(credentials, repository, activity, config, silentLogger(), clock);
-  return { repository, service, collects: (): number => collects };
+  const insightsRepo = new InMemoryInsightsRepository();
+  const source = fakeInsightsSource({
+    details: {
+      '1': { sha: '1', date: '2026-10-14T14:00:00Z', message: 'feat: secret thing', isMerge: false, files: [{ filename: 'infra/main.tf', additions: 12, deletions: 1 }] },
+    },
+  });
+  const insights = new DefaultInsightsService(insightsRepo, source, silentLogger(), clock);
+  const activity: ActivityService = new DefaultActivityService(repository, collector, config, silentLogger(), clock, insights);
+  const trigger = new InlineTrigger((): ActivityService => activity, silentLogger());
+  const service = new DefaultWebhookService(credentials, repository, insights, trigger, config, silentLogger(), clock);
+  return { insightsRepo, fetched: source.fetched, repository, service, collects: (): number => collects };
 };
 
 describe('verifySignature', () => {
@@ -124,13 +137,30 @@ describe('DefaultWebhookService', () => {
     expect(res).toEqual({ ok: true, value: WebhookOutcome.Pong });
   });
 
-  test('stores a push and triggers one shallow refresh', async () => {
-    const { service, repository, collects } = setup();
+  test('stores a push, refreshes once, and classifies the pushed commits into the ledger', async () => {
+    const { service, repository, collects, insightsRepo, fetched } = setup();
     const res = await service.handle(request('push', JSON.stringify(payload())));
     expect(res).toEqual({ ok: true, value: WebhookOutcome.Stored });
     const events = await repository.listLiveEvents(null, 10);
     expect(events.ok && events.value.length).toBe(1);
     expect(collects()).toBe(1);
+    // Only the distinct commit is fetched and classified; the queue is drained.
+    expect(fetched).toEqual(['1']);
+    const ledger = [...insightsRepo.ledger.values()];
+    expect(ledger).toHaveLength(1);
+    expect(ledger[0]?.lines['terraform']).toEqual({ add: 12, del: 1, files: 1 });
+    expect(ledger[0]?.type).toBe('feat');
+    expect(insightsRepo.pending.size).toBe(0);
+    // The stored snapshot now carries insights.
+    const snap = await repository.getSnapshot();
+    expect(snap.ok && snap.value?.insights?.iac.tools[0]?.tool).toBe('terraform');
+  });
+
+  test('a private push is queued under an opaque repo key and the ledger never holds its name', async () => {
+    const { service, insightsRepo } = setup();
+    await service.handle(request('push', JSON.stringify(payload({ repository: { id: 42, full_name: 'DavisSylvester/top-secret', private: true, html_url: 'x' } }))));
+    expect(JSON.stringify([...insightsRepo.ledger.values()])).not.toContain('top-secret');
+    expect([...insightsRepo.ledger.values()][0]?.repo).toBe('private:42');
   });
 
   test('ignores pushes by other people and branch deletions', async () => {
@@ -146,5 +176,13 @@ describe('DefaultWebhookService', () => {
     const res = await service.handle(request('push', JSON.stringify({ ref: 1 })));
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.error.status).toBe(400);
+  });
+});
+
+describe('toPendingCommits', () => {
+  test('queues distinct commits only', () => {
+    const items = toPendingCommits(payload(), new Date('2026-10-14T15:00:00Z'));
+    expect(items.map((i) => i.sha)).toEqual(['1']);
+    expect(items[0]?.isPrivate).toBe(true);
   });
 });

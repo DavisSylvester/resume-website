@@ -7,6 +7,7 @@ export const PushPayloadSchema = Type.Object(
     deleted: Type.Optional(Type.Boolean()),
     repository: Type.Object(
       {
+        id: Type.Optional(Type.Integer()),
         full_name: Type.String(),
         private: Type.Boolean(),
         html_url: Type.String(),

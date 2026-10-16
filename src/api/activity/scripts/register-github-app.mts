@@ -28,7 +28,7 @@ if (!webhookUrl?.startsWith('https://')) {
   process.exit(1);
 }
 
-/** Least privilege: read repository contents and metadata, receive push events. Private to this account. */
+/** Least privilege: read-only contents, metadata, pull requests and Actions; receive push events. Private to this account. */
 const manifest: Record<string, unknown> = {
   name: appName,
   url: 'https://www.dsylvester.io/activity',
@@ -36,7 +36,7 @@ const manifest: Record<string, unknown> = {
   public: false,
   hook_attributes: { url: webhookUrl, active: true },
   redirect_url: `http://localhost:${port}/callback`,
-  default_permissions: { contents: 'read', metadata: 'read' },
+  default_permissions: { contents: 'read', metadata: 'read', pull_requests: 'read', actions: 'read' },
   default_events: ['push'],
 };
 

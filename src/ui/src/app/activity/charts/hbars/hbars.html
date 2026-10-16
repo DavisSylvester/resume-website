@@ -1,0 +1,17 @@
+<div #canvas class="viz-canvas" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <table class="viz-table">
+    <caption>{{ caption() }}</caption>
+    <tbody>
+      @for (r of data(); track r.label) {
+        <tr>
+          <th scope="row">{{ r.label }}</th>
+          <td>{{ r.valueLabel }}</td>
+          @if (r.note) {
+            <td>{{ r.note }}</td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+}

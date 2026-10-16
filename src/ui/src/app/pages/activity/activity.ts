@@ -7,6 +7,7 @@ import { LanguageBars } from '../../activity/charts/language-bars/language-bars'
 import { RadialCalendar } from '../../activity/charts/radial-calendar/radial-calendar';
 import { RepoStream } from '../../activity/charts/repo-stream/repo-stream';
 import { RhythmHeatmap, hourLabel } from '../../activity/charts/rhythm-heatmap/rhythm-heatmap';
+import { InsightsSection } from './insights/insights-section';
 import type { ActivitySnapshot, CalendarDay, LiveEvent } from '../../activity/interfaces';
 
 interface Tile {
@@ -28,7 +29,7 @@ export const relativeTime = (iso: string, now: number): string => {
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [RadialCalendar, RhythmHeatmap, RepoStream, ChurnChart, LanguageBars],
+  imports: [RadialCalendar, RhythmHeatmap, RepoStream, ChurnChart, LanguageBars, InsightsSection],
   templateUrl: './activity.html',
   styleUrl: './activity.scss',
 })

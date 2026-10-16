@@ -5,4 +5,6 @@ export interface ActivityService {
   getLiveEvents(since: string | null): Promise<Result<LiveEventList>>;
   /** Re-collects from GitHub. When `debounce` is set, skips if the snapshot is fresh. */
   refresh(depth: RefreshDepth, debounce: boolean): Promise<Result<ActivitySnapshot | null>>;
+  /** Background work after a push: contributions refresh plus classifying the pushed commits. */
+  processPush(): Promise<Result<ActivitySnapshot | null>>;
 }

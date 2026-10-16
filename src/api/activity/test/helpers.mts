@@ -1,7 +1,8 @@
 import winston from 'winston';
 import type { Logger } from 'winston';
-import type { ContributionsResponse } from '../src/interfaces/index.mjs';
-import type { ActivitySnapshot, Env } from '../src/types/index.mjs';
+import { ok } from '../src/types/index.mjs';
+import type { CommitDetail, ContributionsResponse, InsightsSource, RepoTarget } from '../src/interfaces/index.mjs';
+import type { ActivitySnapshot, Env, RepoScan, Result } from '../src/types/index.mjs';
 
 /** A logger that writes nowhere, so test output stays clean. */
 export const silentLogger = (): Logger =>
@@ -100,3 +101,51 @@ export const sampleSnapshot = (generatedAt: string = '2026-10-14T12:00:00.000Z')
   hourOfWeek: Array.from({ length: 7 }, (): number[] => Array.from({ length: 24 }, (): number => 0)),
   churn: [],
 });
+
+export interface FakeSourceOptions {
+  targets?: RepoTarget[];
+  scans?: Record<string, Partial<RepoScan>>;
+  commits?: Record<string, { sha: string; date: string; isMerge?: boolean }[]>;
+  details?: Record<string, CommitDetail>;
+  rate?: number | null;
+}
+
+/** In-memory InsightsSource. Records every commit-detail fetch in `fetched`. */
+export const fakeInsightsSource = (o: FakeSourceOptions = {}): InsightsSource & { fetched: string[]; scanned: string[] } => {
+  const fetched: string[] = [];
+  const scanned: string[] = [];
+  return {
+    fetched,
+    scanned,
+    repoTargets: async () => ok(o.targets ?? []),
+    scanRepo: async (t: RepoTarget, nowIso: string): Promise<Result<RepoScan>> => {
+      scanned.push(t.fullName);
+      return ok({
+        repo: t.fullName,
+        isPrivate: t.isPrivate,
+        pushedAt: t.pushedAt,
+        scannedAt: nowIso,
+        roots: { cdk: [], pulumi: [], cloudformation: [], serverless: [] },
+        tools: [],
+        frameworks: [],
+        providers: [],
+        clouds: [],
+        testBytes: 0,
+        codeBytes: 0,
+        commitsListedUntil: null,
+        ...(o.scans?.[t.fullName] ?? {}),
+      });
+    },
+    listMyCommits: async (fullName: string) =>
+      ok((o.commits?.[fullName] ?? []).map((c) => ({ sha: c.sha, date: c.date, isMerge: c.isMerge ?? false }))),
+    commitDetail: async (_fullName: string, sha: string): Promise<Result<CommitDetail | null>> => {
+      fetched.push(sha);
+      return ok(o.details?.[sha] ?? null);
+    },
+    pullRequests: async () => ok({ items: [], counts: { opened: 0, merged: 0, monthly: {} }, includePrivate: true }),
+    workflowRuns: async (t: RepoTarget, _from: string, nowIso: string) =>
+      ok({ repo: t.fullName, isPrivate: t.isPrivate, fetchedAt: nowIso, weekly: {}, denied: false }),
+    career: async () => ok({ joinedYear: 2015, years: [] }),
+    rateRemaining: () => o.rate ?? null,
+  };
+};

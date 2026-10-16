@@ -63,9 +63,10 @@ export class GitHubAppClient implements GitHubClient {
     if (!auth.ok) return auth;
     const res: Response = await this.fetchFn(`${API}${path}`, { headers: this.headers(auth.value) });
     // 202: GitHub is still computing statistics. 204: empty repository.
-    if (res.status === 202 || res.status === 204) return ok({ status: res.status, data: null });
+    const rateRemaining: number | null = res.headers.has('x-ratelimit-remaining') ? Number(res.headers.get('x-ratelimit-remaining')) : null;
+    if (res.status === 202 || res.status === 204) return ok({ status: res.status, data: null, rateRemaining });
     if (!res.ok) return fail(new GitHubError(res.status, `GET ${path} -> HTTP ${res.status}`));
-    return ok({ status: res.status, data: (await res.json()) as T });
+    return ok({ status: res.status, data: (await res.json()) as T, rateRemaining });
   }
 
   private headers(token: string): Record<string, string> {

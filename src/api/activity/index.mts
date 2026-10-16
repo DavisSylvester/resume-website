@@ -1,6 +1,7 @@
 import { createContainer } from './src/container.mjs';
 import { loadEnv } from './src/config/load-config.mjs';
 import { createActivityRouter } from './src/routes/activity-router.mjs';
+import { PUSH_EVENT_SOURCE } from './src/clients/async-triggers.mjs';
 import { RefreshDepth } from './src/types/index.mjs';
 import type { Container, LambdaEvent, LambdaResult } from './src/interfaces/index.mjs';
 import type { ActivitySnapshot, Result } from './src/types/index.mjs';
@@ -23,6 +24,12 @@ const isScheduled = (event: LambdaEvent): boolean => event.source === 'aws.event
 /** API Gateway HTTP API (payload v2) requests, plus the EventBridge refresh schedule. */
 export const handle = async (event: LambdaEvent): Promise<LambdaResult> => {
   const { container, app } = boot();
+
+  if (event.source === PUSH_EVENT_SOURCE) {
+    const res: Result<ActivitySnapshot | null> = await container.activityService.processPush();
+    if (!res.ok) container.logger.error('push processing failed', { error: res.error.message });
+    return { statusCode: res.ok ? 200 : 500, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ok: res.ok }) };
+  }
 
   if (isScheduled(event)) {
     const res: Result<ActivitySnapshot | null> = await container.activityService.refresh(RefreshDepth.Deep, false);

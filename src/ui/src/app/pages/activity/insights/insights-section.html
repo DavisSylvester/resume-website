@@ -1,0 +1,135 @@
+<section class="insights" aria-labelledby="insights-title">
+  <header class="insights__head">
+    <h2 id="insights-title" class="insights__title">Engineering insights</h2>
+    <p class="viz-sub">{{ coverage() }} Private repositories contribute counts only.</p>
+  </header>
+
+  <div class="act-grid">
+    <!-- Infrastructure as code -->
+    <section class="viz-card act-span-3">
+      <h2>Infrastructure as code</h2>
+      <p class="viz-sub">Commits that change infrastructure files, classified by tool. {{ iacHeadline() }}</p>
+      <div class="ins-tiles">
+        @for (t of tools(); track t.tool) {
+          <div class="ins-tile">
+            <span class="ins-tile__label">
+              <span class="viz-legend__swatch" [style.background]="'var(' + toolMeta[t.tool].color + ')'"></span>
+              {{ toolMeta[t.tool].label }}
+            </span>
+            <span class="ins-tile__value">{{ fmt.format(t.commits) }} <small>commits</small></span>
+            <span class="ins-tile__note">+{{ fmt.format(t.linesAdded) }} lines · {{ t.reposPresent }} {{ t.reposPresent === 1 ? 'repo' : 'repos' }}</span>
+          </div>
+        } @empty {
+          <p class="viz-sub">No infrastructure code found yet.</p>
+        }
+      </div>
+      @if (iacColumns().series.length > 0) {
+        <app-stacked-columns [data]="iacColumns()" [tableView]="tableView()" />
+      }
+      <div class="ins-split">
+        <div>
+          <h3>Clouds targeted</h3>
+          <app-hbars [data]="clouds()" caption="Repositories per cloud provider" [labelWidth]="60" [tableView]="tableView()" />
+        </div>
+        @if (providers()) {
+          <div>
+            <h3>Terraform providers</h3>
+            <p class="ins-providers">{{ providers() }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Stack fingerprint -->
+    <section class="viz-card act-span-2">
+      <h2>Stack fingerprint</h2>
+      <p class="viz-sub">Frameworks and platforms detected in the dependency manifests of repositories I committed to. The number is how many repositories use it.</p>
+      <div class="stack-groups">
+        @for (g of stackGroups(); track g.category) {
+          <div class="stack-group">
+            <h3>{{ g.category }}</h3>
+            <ul class="stack-chips">
+              @for (s of g.items; track s.name) {
+                <li><span>{{ s.name }}</span><span class="stack-chips__count">{{ s.repos }}</span></li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Commit mix -->
+    <section class="viz-card">
+      <h2>How I commit</h2>
+      <p class="viz-sub">Share of commits by Conventional Commit type.</p>
+      <app-hbars [data]="commitTypes()" caption="Commits by type" [labelWidth]="128" [tableView]="tableView()" />
+    </section>
+
+    <!-- Pull requests -->
+    <section class="viz-card act-span-2">
+      <h2>Pull requests</h2>
+      <p class="viz-sub">
+        Pull requests I authored in the last 12 months.
+        @if (!insights().coverage.pullRequestsIncludePrivate) {
+          Public repositories only for now.
+        }
+      </p>
+      <div class="ins-tiles ins-tiles--grid">
+        @for (t of prTiles(); track t.label) {
+          <div class="ins-tile">
+            <span class="ins-tile__label">{{ t.label }}</span>
+            <span class="ins-tile__value">{{ t.value }}</span>
+            <span class="ins-tile__note">{{ t.note }}</span>
+          </div>
+        }
+      </div>
+      <app-stacked-columns [data]="prColumns()" [tableView]="tableView()" />
+    </section>
+
+    <!-- Testing -->
+    <section class="viz-card">
+      <h2>Testing discipline</h2>
+      <p class="viz-sub">How much of the work changes tests alongside code.</p>
+      <div class="meter" role="meter" aria-label="Share of commits that touch tests" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="(testMeter() * 100).toFixed(0)">
+        <span class="meter__fill" [style.width.%]="testMeter() * 100"></span>
+      </div>
+      <div class="ins-tiles ins-tiles--grid">
+        @for (t of testingTiles(); track t.label) {
+          <div class="ins-tile">
+            <span class="ins-tile__label">{{ t.label }}</span>
+            <span class="ins-tile__value">{{ t.value }}</span>
+            <span class="ins-tile__note">{{ t.note }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- CI/CD -->
+    <section class="viz-card act-span-3">
+      <h2>CI/CD</h2>
+      <p class="viz-sub">
+        GitHub Actions runs I triggered, by week and outcome.
+        @if (!insights().coverage.actionsIncludePrivate) {
+          Public repositories only for now.
+        }
+      </p>
+      <div class="ins-tiles">
+        @for (t of ciTiles(); track t.label) {
+          <div class="ins-tile">
+            <span class="ins-tile__label">{{ t.label }}</span>
+            <span class="ins-tile__value">{{ t.value }}</span>
+            <span class="ins-tile__note">{{ t.note }}</span>
+          </div>
+        }
+      </div>
+      <app-stacked-columns [data]="ciColumns()" [tableView]="tableView()" />
+    </section>
+
+    <!-- Career arc -->
+    <section class="viz-card act-span-3">
+      <h2>Career arc</h2>
+      <p class="viz-sub">{{ careerSummary() }}</p>
+      <app-stacked-columns [data]="careerColumns()" [tableView]="tableView()" />
+    </section>
+  </div>
+</section>

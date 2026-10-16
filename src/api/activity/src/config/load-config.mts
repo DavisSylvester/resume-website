@@ -18,4 +18,5 @@ export const toAppConfig = (env: Env): AppConfig => ({
   refreshDebounceSeconds: env.REFRESH_DEBOUNCE_SECONDS,
   logLevel: env.LOG_LEVEL,
   secretArn: env.GITHUB_APP_SECRET_ARN ?? null,
+  functionName: env.AWS_LAMBDA_FUNCTION_NAME ?? null,
 });

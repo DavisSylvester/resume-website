@@ -1,0 +1,33 @@
+@if (data().series.length > 1) {
+  <ul class="viz-legend" aria-label="Series">
+    @for (s of data().series; track s.key) {
+      <li><span class="viz-legend__swatch" [style.background]="'var(' + s.color + ')'"></span><span>{{ s.label }}</span></li>
+    }
+  </ul>
+}
+<div #canvas class="viz-canvas" [hidden]="tableView()"></div>
+@if (tableView()) {
+  <div class="viz-table-scroll">
+    <table class="viz-table">
+      <caption>{{ data().caption }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">Period</th>
+          @for (s of data().series; track s.key) {
+            <th scope="col">{{ s.label }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of data().rows; track r.key) {
+          <tr>
+            <th scope="row">{{ r.label }}</th>
+            @for (s of data().series; track s.key) {
+              <td>{{ fmt.format(cell(r, s.key)) }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

@@ -70,7 +70,7 @@ describe('GitHubAppClient', () => {
   test('a 202 from a stats endpoint is a success with no data', async () => {
     const { fetchFn } = fakeGitHub();
     const client = new GitHubAppClient(credentials, silentLogger(), fetchFn);
-    expect(await client.rest('/repos/a/b/stats/contributors')).toEqual({ ok: true, value: { status: 202, data: null } });
+    expect(await client.rest('/repos/a/b/stats/contributors')).toEqual({ ok: true, value: { status: 202, data: null, rateRemaining: null } });
   });
 
   test('GraphQL errors become a failed Result', async () => {
