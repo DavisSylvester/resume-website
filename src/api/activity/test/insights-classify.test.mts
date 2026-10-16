@@ -87,6 +87,13 @@ describe('terraform providers', () => {
     expect(terraformProviders(tf)).toEqual(['azurerm', 'google']);
   });
 
+  test('drops utility providers such as local, null and random', () => {
+    const lock: string = ['aws', 'local', 'null', 'random']
+      .map((p: string): string => `provider "registry.terraform.io/hashicorp/${p}" {}`)
+      .join('\n');
+    expect(terraformProviders(lock)).toEqual(['aws']);
+  });
+
   test('maps providers to clouds', () => {
     expect(cloudOfProvider('aws')).toBe('AWS');
     expect(cloudOfProvider('azuread')).toBe('Azure');

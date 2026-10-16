@@ -124,14 +124,17 @@ const PROVIDER_CLOUD: Record<string, Cloud> = {
   'google-beta': Cloud.Gcp,
 };
 
-/** Terraform provider names from `.terraform.lock.hcl` or `.tf` source. */
+/** HashiCorp utility providers that say nothing about the platform being built. */
+const UTILITY_PROVIDERS: Set<string> = new Set(['local', 'null', 'random', 'time', 'tls', 'archive', 'external', 'http', 'template', 'cloudinit', 'terraform']);
+
+/** Terraform provider names from `.terraform.lock.hcl` or `.tf` source, minus utility providers. */
 export const terraformProviders = (text: string): string[] => {
   const found: Set<string> = new Set();
   for (const m of text.matchAll(/provider\s+"registry\.terraform\.io\/[^/"]+\/([a-z0-9-]+)"/g)) found.add(m[1] ?? '');
   for (const m of text.matchAll(/source\s*=\s*"(?:registry\.terraform\.io\/)?[^/"]+\/([a-z0-9-]+)"/g)) found.add(m[1] ?? '');
   for (const m of text.matchAll(/^\s*provider\s+"([a-z0-9-]+)"\s*\{/gm)) found.add(m[1] ?? '');
   found.delete('');
-  return [...found].sort();
+  return [...found].filter((p: string): boolean => !UTILITY_PROVIDERS.has(p)).sort();
 };
 
 export const cloudOfProvider = (provider: string): Cloud | null => PROVIDER_CLOUD[provider] ?? null;
