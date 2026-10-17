@@ -7,14 +7,28 @@ import { LanguageBars } from '../../activity/charts/language-bars/language-bars'
 import { RadialCalendar } from '../../activity/charts/radial-calendar/radial-calendar';
 import { RepoStream } from '../../activity/charts/repo-stream/repo-stream';
 import { RhythmHeatmap, hourLabel } from '../../activity/charts/rhythm-heatmap/rhythm-heatmap';
-import { InsightsSection } from './insights/insights-section';
-import type { ActivitySnapshot, CalendarDay, LiveEvent } from '../../activity/interfaces';
+import { InsightsSection, TOOL_META } from './insights/insights-section';
+import type { ActivitySnapshot, CalendarDay, IacToolStat, LiveEvent } from '../../activity/interfaces';
 
 interface Tile {
   label: string;
   value: string;
   note: string;
 }
+
+/** IaC tools that get their own tile in the key-figures row. */
+const IAC_KPI_TOOLS: string[] = ['cdk', 'terraform'];
+
+export const iacTile = (tool: string, stats: IacToolStat[]): Tile => {
+  const stat: IacToolStat | undefined = stats.find((t: IacToolStat): boolean => t.tool === tool);
+  const label: string = `${TOOL_META[tool]?.label ?? tool} commits`;
+  if (!stat) return { label, value: '–', note: 'no infrastructure commits yet' };
+  return {
+    label,
+    value: whole.format(stat.commits),
+    note: `+${compact.format(stat.linesAdded)} lines · ${stat.reposPresent} ${stat.reposPresent === 1 ? 'repo' : 'repos'}`,
+  };
+};
 
 const WEEKDAYS: string[] = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays'];
 
@@ -58,6 +72,7 @@ export class Activity implements OnInit, OnDestroy {
       { label: 'Lines added', value: compact.format(t.linesAdded), note: `${compact.format(t.linesDeleted)} deleted, public repos` },
       { label: 'Current streak', value: `${s.streak.current} days`, note: `longest ${s.streak.longest} days` },
       { label: 'Pull requests', value: whole.format(t.pullRequests), note: `${whole.format(t.reviews)} reviews` },
+      ...IAC_KPI_TOOLS.map((tool: string): Tile => iacTile(tool, s.insights?.iac.tools ?? [])),
     ];
   });
 
