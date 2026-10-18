@@ -56,6 +56,6 @@ export class App {
   protected readonly title = signal('davis-resume');
   constructor(private router: Router) {}
   isStandalonePage() {
-    return this.router.url.startsWith('/print') || this.router.url.startsWith('/activity');
+    return ['/print', '/activity', '/portfolio'].some((path) => this.router.url.startsWith(path));
   }
 }

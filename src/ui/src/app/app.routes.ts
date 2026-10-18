@@ -10,4 +10,14 @@ export const routes: Routes = [
     title: 'GitHub Activity | Davis Sylvester',
     loadComponent: () => import('./pages/activity/activity').then((m) => m.Activity),
   },
+  {
+    path: 'portfolio',
+    title: 'Public Projects | Davis Sylvester',
+    loadComponent: () => import('./pages/portfolio/portfolio').then((m) => m.Portfolio),
+  },
+  {
+    path: 'portfolio/:slug',
+    loadComponent: () =>
+      import('./pages/portfolio-project/portfolio-project').then((m) => m.PortfolioProjectPage),
+  },
 ];

@@ -1,0 +1,57 @@
+<div class="container summary">
+  <a class="summary__back" routerLink="/portfolio">← All public projects</a>
+
+  @if (project(); as p) {
+    <header class="summary__head">
+      <img class="summary__icon" [src]="p.icon" [alt]="p.name + ' app icon'" width="96" height="96" />
+      <div>
+        <h1>{{ p.name }}</h1>
+        <p class="summary__tagline">{{ p.tagline }}</p>
+        <p class="summary__status">{{ p.status }}</p>
+      </div>
+    </header>
+
+    <app-store-links [project]="p" />
+
+    <section class="summary__section" aria-labelledby="overview-title">
+      <h2 id="overview-title">Overview</h2>
+      @for (para of p.summary; track $index) {
+        <p>{{ para }}</p>
+      }
+    </section>
+
+    <section class="summary__section" aria-labelledby="features-title">
+      <h2 id="features-title">What it does</h2>
+      <div class="cards">
+        @for (h of p.highlights; track h.title) {
+          <div class="card">
+            <h3>{{ h.title }}</h3>
+            <p>{{ h.text }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="summary__section" aria-labelledby="arch-title">
+      <h2 id="arch-title">How it is built</h2>
+      <dl class="summary__arch">
+        @for (a of p.architecture; track a.title) {
+          <div class="summary__arch-row">
+            <dt>{{ a.title }}</dt>
+            <dd>{{ a.text }}</dd>
+          </div>
+        }
+      </dl>
+      <div class="chips">
+        @for (s of p.stack; track s) {
+          <span class="chip">{{ s }}</span>
+        }
+      </div>
+    </section>
+  } @else {
+    <section class="summary__section">
+      <h1>Project not found</h1>
+      <p>There is no public project at this address. <a routerLink="/portfolio">See all public projects.</a></p>
+    </section>
+  }
+</div>
