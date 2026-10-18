@@ -1,0 +1,21 @@
+@let p = project();
+<div class="store-links">
+  @if (p.appStoreUrl) {
+    <a class="store-link store-link--primary" [href]="p.appStoreUrl" target="_blank" rel="noopener" [attr.aria-label]="'Download ' + p.name + ' on the App Store'">
+      <span class="store-link__small">Download on the</span>
+      <span class="store-link__big">App Store</span>
+    </a>
+  }
+  @if (p.playStoreUrl) {
+    <a class="store-link" [href]="p.playStoreUrl" target="_blank" rel="noopener" [attr.aria-label]="'Get ' + p.name + ' on Google Play'">
+      <span class="store-link__small">Get it on</span>
+      <span class="store-link__big">Google Play</span>
+    </a>
+  }
+  @if (p.websiteUrl) {
+    <a class="store-link" [href]="p.websiteUrl" target="_blank" rel="noopener" [attr.aria-label]="p.name + ' website'">
+      <span class="store-link__small">Visit the</span>
+      <span class="store-link__big">Website</span>
+    </a>
+  }
+</div>
