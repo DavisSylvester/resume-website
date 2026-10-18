@@ -1,6 +1,6 @@
 import { createContainer } from './src/container.mjs';
 import { loadEnv } from './src/config/load-config.mjs';
-import { createActivityRouter } from './src/routes/activity-router.mjs';
+import { createActivityRouter, SOURCE_IP_HEADER } from './src/routes/activity-router.mjs';
 import { PUSH_EVENT_SOURCE } from './src/clients/async-triggers.mjs';
 import { RefreshDepth } from './src/types/index.mjs';
 import type { Container, LambdaEvent, LambdaResult } from './src/interfaces/index.mjs';
@@ -48,6 +48,10 @@ export const handle = async (event: LambdaEvent): Promise<LambdaResult> => {
     for (const [key, value] of Object.entries(event.headers ?? {})) {
       if (value !== undefined) headers.set(key, value);
     }
+    // Trust only API Gateway's view of the caller, never a client-sent header.
+    headers.delete(SOURCE_IP_HEADER);
+    const sourceIp: string | undefined = event.requestContext?.http?.sourceIp;
+    if (sourceIp) headers.set(SOURCE_IP_HEADER, sourceIp);
     const init: RequestInit = { method, headers };
     if (method !== 'GET' && method !== 'HEAD' && event.body) {
       init.body = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body;

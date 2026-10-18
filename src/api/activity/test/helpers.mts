@@ -18,6 +18,9 @@ export const testEnv = (overrides: Partial<Env> = {}): Env => ({
   LIVE_EVENT_TTL_DAYS: 30,
   REFRESH_DEBOUNCE_SECONDS: 60,
   LOG_LEVEL: 'error',
+  CONTACT_EMAIL_TO: 'davis@example.com',
+  CONTACT_PHONE_TO: '+12145550100',
+  CONTACT_RATE_LIMIT_PER_HOUR: 5,
   ...overrides,
 });
 

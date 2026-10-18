@@ -29,6 +29,7 @@ const ALLOWED_ORIGINS: string = [
 export class ActivityApi extends Construct {
   public readonly table: dynamodb.Table;
   public readonly secret: secretsmanager.Secret;
+  public readonly contactSecret: secretsmanager.Secret;
   public readonly fn: lambda.DockerImageFunction;
 
   constructor(scope: Construct, id: string, props: ActivityApiProps) {
@@ -63,6 +64,29 @@ export class ActivityApi extends Construct {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // RETAIN: survives `cdk destroy`. Channels left as REPLACE_ME are skipped by the API, so
+    // each one can be switched on independently with `aws secretsmanager put-secret-value`.
+    this.contactSecret = new secretsmanager.Secret(this, "ContactSecret", {
+      secretName: resourceName(config, "contact"),
+      description:
+        "Contact form channels: Resend (email), Twilio (SMS + WhatsApp), Telegram bot, Slack and Teams webhooks",
+      secretStringValue: SecretValue.unsafePlainText(
+        JSON.stringify({
+          resendApiKey: "REPLACE_ME",
+          emailFrom: "REPLACE_ME",
+          twilioAccountSid: "REPLACE_ME",
+          twilioAuthToken: "REPLACE_ME",
+          twilioSmsFrom: "REPLACE_ME",
+          twilioWhatsAppFrom: "REPLACE_ME",
+          telegramBotToken: "REPLACE_ME",
+          telegramChatId: "REPLACE_ME",
+          slackWebhookUrl: "REPLACE_ME",
+          teamsWebhookUrl: "REPLACE_ME",
+        }),
+      ),
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+
     const functionName: string = resourceName(config, "activity-api");
 
     const logGroup = new logs.LogGroup(this, "ActivityApiLogs", {
@@ -89,11 +113,16 @@ export class ActivityApi extends Construct {
         ACTIVITY_TIMEZONE: "America/Chicago",
         ALLOWED_ORIGINS,
         LOG_LEVEL: "info",
+        CONTACT_SECRET_ARN: this.contactSecret.secretArn,
+        CONTACT_EMAIL_TO: "dsylvesteriii@gmail.com",
+        CONTACT_PHONE_TO: "+12142231413",
+        CONTACT_RATE_LIMIT_PER_HOUR: "5",
       },
     });
 
     this.table.grantReadWriteData(this.fn);
     this.secret.grantRead(this.fn);
+    this.contactSecret.grantRead(this.fn);
 
     // The webhook hands heavy work to an async invoke of this same function. The ARN is built
     // from the name (not this.fn.functionArn) to avoid a self-referencing dependency cycle.
@@ -115,6 +144,12 @@ export class ActivityApi extends Construct {
     });
 
     api.addRoutes({
+      path: "/contact",
+      methods: [apigwv2.HttpMethod.POST, apigwv2.HttpMethod.OPTIONS],
+      integration,
+    });
+
+    api.addRoutes({
       path: "/webhooks/github",
       methods: [apigwv2.HttpMethod.POST],
       integration,
@@ -131,5 +166,7 @@ export class ActivityApi extends Construct {
     new CfnOutput(this, "GitHubWebhookUrl", { value: `${api.apiEndpoint}/webhooks/github` });
     new CfnOutput(this, "GitHubAppSecretArn", { value: this.secret.secretArn });
     new CfnOutput(this, "ActivityTableName", { value: this.table.tableName });
+    new CfnOutput(this, "ContactUrl", { value: `${api.apiEndpoint}/contact` });
+    new CfnOutput(this, "ContactSecretArn", { value: this.contactSecret.secretArn });
   }
 }

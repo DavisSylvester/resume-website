@@ -1,0 +1,131 @@
+<dialog
+  #dialog
+  class="contact-dialog"
+  aria-labelledby="contact-title"
+  (close)="onNativeClose()"
+  (click)="onBackdropClick($event)"
+>
+  <div class="panel">
+    <header class="panel__header">
+      <div>
+        <h2 id="contact-title">Contact Davis</h2>
+        <p class="panel__lede">Reaches me on email, text, WhatsApp, Telegram, Slack and Teams at once.</p>
+      </div>
+      <button type="button" class="icon-button" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    @if (state() === SendState.Sent) {
+      <div class="sent" role="status">
+        <div class="sent__mark" aria-hidden="true">✓</div>
+        <h3>Message sent</h3>
+        <p>
+          Thanks, {{ form.controls.name.value }}. I'll reply by {{ replyOption().label }} at
+          <strong>{{ form.controls.replyTo.value }}</strong>.
+        </p>
+        <button type="button" class="btn btn--primary" (click)="close()">Done</button>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="send()" novalidate>
+        <fieldset class="group">
+          <legend>What can I help with?</legend>
+          <div class="options options--reason">
+            @for (option of reasons; track option.value) {
+              <label class="option">
+                <input type="radio" name="reason" formControlName="reason" [value]="option.value" [attr.value]="option.value" />
+                <span class="option__body">
+                  <span class="option__label">{{ option.label }}</span>
+                  <span class="option__hint">{{ option.hint }}</span>
+                </span>
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        <div class="row">
+          <label class="field">
+            <span class="field__label">Your name</span>
+            <input type="text" formControlName="name" autocomplete="name" maxlength="100"
+              [attr.aria-invalid]="showError('name')" />
+            @if (showError('name')) {
+              <span class="field__error">Please tell me your name.</span>
+            }
+          </label>
+          <label class="field">
+            <span class="field__label">Company <span class="optional">(optional)</span></span>
+            <input type="text" formControlName="company" autocomplete="organization" maxlength="120" />
+          </label>
+        </div>
+
+        <fieldset class="group">
+          <legend>How should I reply?</legend>
+          <div class="options options--channel">
+            @for (option of replyOptions; track option.value) {
+              <label class="option option--compact" [attr.data-channel]="option.value">
+                <input type="radio" name="replyVia" formControlName="replyVia" [value]="option.value" [attr.value]="option.value" />
+                <span class="option__body">
+                  <span class="option__label">{{ option.label }}</span>
+                </span>
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span class="field__label">{{ replyOption().fieldLabel }}</span>
+          <input
+            formControlName="replyTo"
+            maxlength="254"
+            [attr.type]="replyOption().inputType"
+            [attr.inputmode]="replyOption().inputType === 'tel' ? 'tel' : null"
+            [attr.autocomplete]="replyOption().autocomplete"
+            [attr.placeholder]="replyOption().placeholder"
+            [attr.aria-invalid]="showError('replyTo')"
+          />
+          @if (showError('replyTo')) {
+            <span class="field__error">
+              @switch (replyVia()) {
+                @case ('email') { Enter a valid email address. }
+                @case ('sms') { Enter a mobile number with area code. }
+                @default { Enter your WhatsApp number or username. }
+              }
+            </span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field__label">Message</span>
+          <textarea formControlName="message" rows="5" [attr.maxlength]="maxMessage"
+            [attr.aria-invalid]="showError('message')"></textarea>
+          <span class="field__meta">
+            @if (showError('message')) {
+              <span class="field__error">Please add a short message.</span>
+            }
+            <span class="field__count">{{ messageLength() }} / {{ maxMessage }}</span>
+          </span>
+        </label>
+
+        <!-- Honeypot: hidden from people and screen readers; bots fill it. -->
+        <label class="hp" aria-hidden="true">
+          Website
+          <input type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+        </label>
+
+        @if (state() === SendState.Error) {
+          <p class="alert" role="alert">
+            {{ errorMessage() }}
+            <a href="mailto:dsylvesteriii@gmail.com">dsylvesteriii&#64;gmail.com</a>
+          </p>
+        }
+
+        <div class="actions">
+          <button type="button" class="btn btn--ghost" (click)="close()">Cancel</button>
+          <button type="submit" class="btn btn--primary" [disabled]="state() === SendState.Sending">
+            {{ state() === SendState.Sending ? 'Sending…' : 'Send message' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</dialog>

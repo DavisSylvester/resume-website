@@ -4,11 +4,18 @@ import { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import type { Logger } from 'winston';
 import {
+  EnvContactSecretsProvider,
   EnvCredentialsProvider,
   GitHubAppClient,
   InlineTrigger,
   LambdaSelfTrigger,
+  ResendEmailNotifier,
+  SecretsManagerContactSecretsProvider,
   SecretsManagerCredentialsProvider,
+  SlackNotifier,
+  TeamsNotifier,
+  TelegramNotifier,
+  TwilioNotifier,
 } from './clients/index.mjs';
 import type { FetchFn } from './clients/index.mjs';
 import { createLogger } from './config/create-logger.mjs';
@@ -21,11 +28,16 @@ import type { InsightsBudgets } from './services/insights/insights-service.mjs';
 import { GitHubContributionCollector } from './repositories/github-contribution-collector.mjs';
 import { DefaultActivityService } from './services/activity-service.mjs';
 import { DefaultWebhookService } from './services/webhook-service.mjs';
+import { DefaultContactService } from './services/contact/contact-service.mjs';
+import { DynamoContactRepository } from './repositories/dynamo-contact-repository.mjs';
 import type {
   ActivityRepository,
   ActivityService,
   AppConfig,
   AsyncTrigger,
+  ContactRepository,
+  ContactSecretsProvider,
+  ContactService,
   Container,
   ContributionCollector,
   CredentialsProvider,
@@ -33,6 +45,7 @@ import type {
   InsightsRepository,
   InsightsService,
   InsightsSource,
+  Notifier,
   WebhookService,
 } from './interfaces/index.mjs';
 import type { Env } from './types/index.mjs';
@@ -49,6 +62,10 @@ export interface ContainerOverrides {
   insightsSource?: InsightsSource;
   insightsBudgets?: InsightsBudgets;
   trigger?: AsyncTrigger;
+  contactRepository?: ContactRepository;
+  contactSecrets?: ContactSecretsProvider;
+  notifiers?: Notifier[];
+  newId?: () => string;
 }
 
 /** The composition root. The only place in the API that calls `new` on a service. */
@@ -93,5 +110,28 @@ export const createContainer = (env: Env, overrides: ContainerOverrides = {}): C
     clock,
   );
 
-  return { config, logger, repository, activityService, insightsService, webhookService };
+  const contactSecrets: ContactSecretsProvider =
+    overrides.contactSecrets ??
+    (config.contact.secretArn
+      ? new SecretsManagerContactSecretsProvider(new SecretsManagerClient({}), config.contact.secretArn)
+      : new EnvContactSecretsProvider(env));
+  const notifiers: Notifier[] = overrides.notifiers ?? [
+    new ResendEmailNotifier(contactSecrets, config.contact, fetchFn),
+    new TwilioNotifier('sms', contactSecrets, config.contact, fetchFn),
+    new TwilioNotifier('whatsapp', contactSecrets, config.contact, fetchFn),
+    new TelegramNotifier(contactSecrets, fetchFn),
+    new SlackNotifier(contactSecrets, fetchFn),
+    new TeamsNotifier(contactSecrets, fetchFn),
+  ];
+  const contactRepository: ContactRepository = overrides.contactRepository ?? new DynamoContactRepository(dynamo(), config.tableName);
+  const contactService: ContactService = new DefaultContactService(
+    contactRepository,
+    notifiers,
+    config.contact,
+    logger,
+    clock,
+    overrides.newId,
+  );
+
+  return { config, logger, repository, activityService, insightsService, webhookService, contactService };
 };

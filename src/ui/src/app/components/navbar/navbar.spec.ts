@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
+import { ContactDialogService } from '../../contact/contact-dialog.service';
 import { Navbar } from './navbar';
 
 @Component({ template: '' })
@@ -83,5 +84,20 @@ describe('Navbar', () => {
     await TestBed.inject(Router).navigateByUrl('/about');
     await fixture.whenStable();
     expect(host.querySelector('#nav-drawer')).toBeNull();
+  });
+
+  it('opens the contact modal from the Contact button', async () => {
+    const contact: ContactDialogService = TestBed.inject(ContactDialogService);
+    (host.querySelector('.nav-button') as HTMLButtonElement).click();
+    expect(contact.isOpen()).toBe(true);
+  });
+
+  it('closes the drawer when Contact is chosen from it', async () => {
+    toggle().click();
+    await fixture.whenStable();
+    (host.querySelector('.drawer__cta') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    expect(host.querySelector('#nav-drawer')).toBeNull();
+    expect(TestBed.inject(ContactDialogService).isOpen()).toBe(true);
   });
 });

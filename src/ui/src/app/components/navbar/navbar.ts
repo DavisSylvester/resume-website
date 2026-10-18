@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router, type Event as RouterEvent } from '@angular/router';
 import type { Subscription } from 'rxjs';
+import { ContactDialogService } from '../../contact/contact-dialog.service';
 
 interface NavLink {
   label: string;
@@ -38,6 +39,8 @@ export class Navbar {
   /** Whether the small-screen drawer is open. Unused above the `md` breakpoint. */
   protected readonly open: WritableSignal<boolean> = signal<boolean>(false);
 
+  private readonly contact: ContactDialogService = inject(ContactDialogService);
+
   public constructor() {
     // Close on any completed navigation (back/forward, future routerLinks). Subscribed
     // manually rather than via rxjs-interop, which trips NG0203 on the Vite dev server.
@@ -53,6 +56,11 @@ export class Navbar {
 
   protected close(): void {
     this.open.set(false);
+  }
+
+  protected openContact(): void {
+    this.close();
+    this.contact.open();
   }
 
   @HostListener('document:keydown.escape')
