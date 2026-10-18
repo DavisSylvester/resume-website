@@ -14,7 +14,7 @@
 - [ ] AWS WhatsApp: link a WhatsApp Business Account + sender number in End User Messaging Social, create a Utility template (`contact_request`, 2 body params), add `whatsAppPhoneNumberId` + `whatsAppTemplateName` to the secret — blocked on the user and Meta review
 - [ ] Confirm the contact email recipient — user typed "dsylvester" (cut off); `CONTACT_EMAIL_TO` is `dsylvesteriii@gmail.com` in `infrastructure/cdk/lib/activity-api.ts`
 - [X] `contact-dialog.scss` under the 4 kB budget — form primitives moved to global `src/styles/_forms.scss`; build has no warnings, dialog checked at 390/1280 px
-- [ ] Delete the merged `feature/contact-modal` branch locally and on GitHub — needs the user's OK
+- [X] Delete merged branches `feature/contact-modal`, `aws-messaging-and-cleanup`, `legal-pages`, `sms-opt-out-line` — deleted locally and on GitHub 2026-10-18 after the user's OK; `git branch -a` shows only `main`
 - [X] Contact modal + `POST /contact` with six channels — PR #12 merged as `bf7fb94`, deploy succeeded; API 127/127, UI 46/46, e2e 48/48; live preflight 204 and invalid POST 400 checked 2026-10-18
 - [X] Slack and Teams channels added — mock-webhook browser run delivered to both
 

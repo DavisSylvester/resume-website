@@ -2,21 +2,23 @@
 
 ## Where to pick up
 
-PR #12 (contact modal) is merged and deployed. **Telegram is live** (2026-10-18) and now uses
-the dedicated bot **@davis_resume_web_bot**: its token (`TELEGRAM_TOKEN` in the gitignored repo
-`.env`) and the user's private chat id are in `gh-app-contact-prod`. First thing: if the todo for
-the live form test via the new bot is still open, send one `POST /contact` (curl below) and
-confirm the user gets it from @davis_resume_web_bot. Email, SMS, WhatsApp, Slack and Teams are
-still `REPLACE_ME`; add each the same way (see `docs/contact-form.md`). Other open items are in
-`.docs/todo.md`.
+The contact form is live on two channels: **email** (Amazon SES, from `contact@dsylvester.ai`,
+PR #14) and **Telegram** (@davis_resume_web_bot; token is `TELEGRAM_TOKEN` in the gitignored
+repo `.env`, and it plus the chat id are in `gh-app-contact-prod`). The last live test returned
+`delivered: ["email","telegram"]`, and the user confirmed the Telegram message came from the new bot.
 
-Test request (counts toward the 5/hour per-IP limit; sends a real message):
+First thing: ask the user whether that SES email reached the Gmail inbox or spam. If spam, add a
+DMARC TXT record for `dsylvester.ai`. After that, SMS and WhatsApp (AWS End User Messaging) are
+blocked on the user's number registration and carrier/Meta review; Slack and Teams are still
+`REPLACE_ME`. Other open items are in `.docs/todo.md`.
+
+Test request (counts toward the 5/hour per-IP limit; sends a real message on every live channel):
 
 ```bash
 curl -s -X POST https://etgzi1pkz8.execute-api.us-east-1.amazonaws.com/contact \
   -H 'content-type: application/json' -H 'origin: https://www.dsylvester.io' \
   -d '{"name":"Claude test","reason":"consulting","replyVia":"email","replyTo":"dsylvesteriii@gmail.com","message":"test","website":""}'
-# expect 202 {"id":"…","delivered":["telegram"]}
+# expect 202 {"id":"…","delivered":["email","telegram"]}
 ```
 
 ## Paths
