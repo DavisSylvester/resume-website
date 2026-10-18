@@ -5,7 +5,7 @@ export interface LambdaEvent {
   headers?: Record<string, string | undefined>;
   body?: string;
   isBase64Encoded?: boolean;
-  requestContext?: { http?: { method?: string } };
+  requestContext?: { http?: { method?: string; sourceIp?: string } };
   /** Present on EventBridge events, e.g. `aws.events`. */
   source?: string;
   'detail-type'?: string;

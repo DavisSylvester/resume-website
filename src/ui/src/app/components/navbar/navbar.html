@@ -6,7 +6,7 @@
       <li><a [href]="link.href">{{ link.label }}</a></li>
     }
   </ul>
-  <a href="/#contact" class="nav-button">Contact</a>
+  <button type="button" class="nav-button" aria-haspopup="dialog" (click)="openContact()">Contact</button>
 
   <button
     type="button"
@@ -28,7 +28,9 @@
           <li><a [href]="link.href" (click)="close()">{{ link.label }}</a></li>
         }
       </ul>
-      <a href="/#contact" class="nav-button drawer__cta" (click)="close()">Contact</a>
+      <button type="button" class="nav-button drawer__cta" aria-haspopup="dialog" (click)="openContact()">
+        Contact
+      </button>
     </div>
   }
 </nav>

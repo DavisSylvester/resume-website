@@ -10,6 +10,7 @@ import { Certifications } from './sections/certifications/certifications';
 import { Projects } from './sections/projects/projects';
 import { Router, RouterOutlet } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { ContactDialog } from './components/contact-dialog/contact-dialog';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { NgIf } from '@angular/common';
     Certifications,
     Projects,
     Badges,
+    ContactDialog,
   ],
   template: `
     <app-navbar></app-navbar>
@@ -49,6 +51,7 @@ import { NgIf } from '@angular/common';
     </main>
     <router-outlet></router-outlet>
     <app-footer></app-footer>
+    <app-contact-dialog></app-contact-dialog>
   `,
   styleUrl: './app.scss',
 })

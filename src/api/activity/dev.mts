@@ -8,6 +8,7 @@ import { Value } from '@sinclair/typebox/value';
 import { createContainer } from './src/container.mjs';
 import { loadEnv } from './src/config/load-config.mjs';
 import { InMemoryActivityRepository } from './src/repositories/in-memory-activity-repository.mjs';
+import { InMemoryContactRepository } from './src/repositories/in-memory-contact-repository.mjs';
 import { createActivityRouter } from './src/routes/activity-router.mjs';
 import { ActivitySnapshotSchema } from './src/schemas/index.mjs';
 import { ok } from './src/types/index.mjs';
@@ -33,6 +34,8 @@ const container: Container = createContainer(
   loadEnv({ ...process.env, GITHUB_LOGIN: process.env['GITHUB_LOGIN'] ?? 'DavisSylvester', TABLE_NAME: 'local' }),
   {
     repository: new InMemoryActivityRepository(seed),
+    // Contact channels read RESEND_API_KEY, TWILIO_*, TELEGRAM_*, SLACK_WEBHOOK_URL, TEAMS_WEBHOOK_URL.
+    contactRepository: new InMemoryContactRepository(),
     collector: devCollector,
     credentials: {
       get: async () => ok({ appId: 'local', installationId: 'local', privateKey: 'unused', webhookSecret: secret }),

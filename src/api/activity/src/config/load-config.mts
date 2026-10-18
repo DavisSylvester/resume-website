@@ -19,4 +19,10 @@ export const toAppConfig = (env: Env): AppConfig => ({
   logLevel: env.LOG_LEVEL,
   secretArn: env.GITHUB_APP_SECRET_ARN ?? null,
   functionName: env.AWS_LAMBDA_FUNCTION_NAME ?? null,
+  contact: {
+    secretArn: env.CONTACT_SECRET_ARN ?? null,
+    emailTo: env.CONTACT_EMAIL_TO,
+    phoneTo: env.CONTACT_PHONE_TO,
+    rateLimitPerHour: env.CONTACT_RATE_LIMIT_PER_HOUR,
+  },
 });

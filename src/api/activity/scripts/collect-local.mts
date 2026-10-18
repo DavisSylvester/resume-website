@@ -31,6 +31,7 @@ const config: AppConfig = {
   logLevel: 'info',
   secretArn: null,
   functionName: null,
+  contact: { secretArn: null, emailTo: 'unused', phoneTo: 'unused', rateLimitPerHour: 5 },
 };
 
 const depth: RefreshDepth = process.argv[2] === 'shallow' ? RefreshDepth.Shallow : RefreshDepth.Deep;

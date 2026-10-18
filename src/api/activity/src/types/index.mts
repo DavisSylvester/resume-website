@@ -22,6 +22,8 @@ import type {
   PullRequestCountsSchema,
   RepoRunsSchema,
   RepoScanSchema,
+  ContactRequestSchema,
+  ContactSecretsSchema,
 } from '../schemas/index.mjs';
 
 export type CalendarDay = Static<typeof CalendarDaySchema>;
@@ -46,6 +48,8 @@ export type PullRequestSummary = Static<typeof PullRequestSummarySchema>;
 export type CareerYear = Static<typeof CareerYearSchema>;
 export type InsightsMeta = Static<typeof InsightsMetaSchema>;
 export type PullRequestCounts = Static<typeof PullRequestCountsSchema>;
+export type ContactRequest = Static<typeof ContactRequestSchema>;
+export type ContactSecrets = Static<typeof ContactSecretsSchema>;
 
 /** Recoverable-error result. Reserve `throw` for unexpected failures. */
 export type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
@@ -67,3 +71,35 @@ export const WebhookOutcome = {
   Pong: 'pong',
 } as const;
 export type WebhookOutcome = (typeof WebhookOutcome)[keyof typeof WebhookOutcome];
+
+export const ContactReason = {
+  Consulting: 'consulting',
+  Resume: 'resume',
+  Employment: 'employment',
+} as const;
+export type ContactReason = (typeof ContactReason)[keyof typeof ContactReason];
+
+export const ReplyChannel = {
+  WhatsApp: 'whatsapp',
+  Sms: 'sms',
+  Email: 'email',
+} as const;
+export type ReplyChannel = (typeof ReplyChannel)[keyof typeof ReplyChannel];
+
+/** Where a contact request is delivered to Davis. */
+export const NotifyChannel = {
+  Email: 'email',
+  Sms: 'sms',
+  WhatsApp: 'whatsapp',
+  Telegram: 'telegram',
+  Slack: 'slack',
+  Teams: 'teams',
+} as const;
+export type NotifyChannel = (typeof NotifyChannel)[keyof typeof NotifyChannel];
+
+export const NotifyOutcome = {
+  Sent: 'sent',
+  /** The channel has no credentials configured. */
+  Skipped: 'skipped',
+} as const;
+export type NotifyOutcome = (typeof NotifyOutcome)[keyof typeof NotifyOutcome];
