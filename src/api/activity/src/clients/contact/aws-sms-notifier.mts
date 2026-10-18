@@ -6,6 +6,8 @@ import type { ContactSecrets, Result } from '../../types/index.mjs';
 
 /** Keeps an SMS to a few segments. */
 const MAX_LENGTH: number = 600;
+/** Required by the toll-free registration: every message carries opt-out wording, as in its samples. */
+export const SMS_OPT_OUT: string = 'Reply STOP to opt out.';
 
 /**
  * SMS to Davis's phone through AWS End User Messaging SMS. Authenticated by the Lambda role, so
@@ -36,7 +38,7 @@ export class AwsSmsNotifier implements Notifier {
         new SendTextMessageCommand({
           DestinationPhoneNumber: this.config.phoneTo,
           OriginationIdentity: origination,
-          MessageBody: shortTextOf(m, MAX_LENGTH),
+          MessageBody: `${shortTextOf(m, MAX_LENGTH - SMS_OPT_OUT.length - 1)}\n${SMS_OPT_OUT}`,
           MessageType: 'TRANSACTIONAL',
         }),
       );
