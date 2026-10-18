@@ -41,3 +41,28 @@
   font-size: 1.1rem;
   font-weight: 600;
 }
+
+.store-links--on-accent {
+  .store-link {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #fff;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: #fff;
+    }
+  }
+
+  .store-link--primary {
+    background: #fff;
+    border-color: #fff;
+    color: var(--accent);
+
+    &:hover,
+    &:focus-visible {
+      background: #f2e9ff;
+    }
+  }
+}

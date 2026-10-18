@@ -1,5 +1,5 @@
 @let p = project();
-<div class="store-links">
+<div class="store-links" [class.store-links--on-accent]="onAccent()">
   @if (p.appStoreUrl) {
     <a class="store-link store-link--primary" [href]="p.appStoreUrl" target="_blank" rel="noopener" [attr.aria-label]="'Download ' + p.name + ' on the App Store'">
       <span class="store-link__small">Download on the</span>
