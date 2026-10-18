@@ -1,5 +1,6 @@
 @use 'breakpoints' as bp;
 @use 'styles/activity';
+@use 'styles/forms';
 
 /* Global styles — mobile first. Base rules target phones; wider layouts use bp.up(). */
 
