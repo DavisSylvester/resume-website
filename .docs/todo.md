@@ -7,7 +7,8 @@
 - [X] Give the contact form its own Telegram bot — @davis_resume_web_bot; direct `sendMessage` from it reached the user's chat (user confirmed 2026-10-18)
 - [X] Live form submission arrives from @davis_resume_web_bot — 07:37:30 UTC 2026-10-18 test returned 202 `delivered: ["telegram"]` (id a5b50a39); user confirmed the sender
 - [X] Email via Amazon SES instead of Resend — sender `contact@dsylvester.ai` (already-verified SES identity, DKIM on, account has production access); local SES send returned `sent` 2026-10-18
-- [ ] After PR #14 deploys: one live `POST /contact` should return `delivered` with `email` and `telegram`; confirm the email lands in Gmail (not spam) — `_dmarc.dsylvester.ai` has no record, add one if it goes to spam
+- [X] PR #14 merged (`a7884e5`, admin) and deployed; live `POST /contact` 2026-10-18 returned 202 `delivered: ["email","telegram"]` (id 48e88995)
+- [ ] Confirm the live SES email landed in the Gmail inbox, not spam — add a DMARC record for `dsylvester.ai` if it went to spam
 - [X] Replace Twilio with AWS End User Messaging (SMS + WhatsApp, IAM role, no keys) — feature/aws-messaging-and-cleanup; API 130/130, cdk synth shows both grants
 - [ ] AWS SMS: request a toll-free number in us-east-1 (End User Messaging SMS), finish its registration, add `smsOriginationIdentity` to `gh-app-contact-prod` — blocked on the user and carrier review
 - [ ] AWS WhatsApp: link a WhatsApp Business Account + sender number in End User Messaging Social, create a Utility template (`contact_request`, 2 body params), add `whatsAppPhoneNumberId` + `whatsAppTemplateName` to the secret — blocked on the user and Meta review
@@ -23,7 +24,7 @@
 - [X] "0 reviews" on the Activity Pull requests tile — not a bug: GitHub's `totalPullRequestReviewContributions` is 0 even with the user's token because the ~120 reviews are in private DavacoLP repos (restricted). UI now hides a zero count (`pullRequestNote`, insights tile)
 - [ ] Optional: count org reviews via a user token + search `reviewed-by:DavisSylvester -author:DavisSylvester` (120 on 2026-10-18) — needs a PAT in Secrets Manager; user hasn't asked
 - [X] ESLint (angular-eslint 21.4, eslint 10) in `src/ui` — `bun run lint` clean; App moved to `inject()` + `@if`
-- [X] CI runs UI lint, unit tests, build and the e2e sweep (artifact upload on failure) — first run pending on the PR
+- [X] CI runs UI lint, unit tests, build and the e2e sweep (artifact upload on failure) — green on PR #14 and the main deploy
 - [ ] Hand the Claude Design redesign prompt to Claude Design — prompt was given in chat 2026-10-18 (mobile-first redesign with motion); it would replace the navbar/hero work but build on the tokens and e2e sweep
 - [X] Delete the merged `feature/responsive-layout` branch — deleted locally and on GitHub 2026-10-18 after the user's OK; `git branch -r` shows only `origin/main`
 - [X] Responsive site (mobile/tablet/desktop) per `docs/responsive-plan.md` — PR #9 merged + deployed; e2e 48/48 against live www.dsylvester.io; ng test 30/30

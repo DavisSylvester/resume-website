@@ -132,10 +132,12 @@ scratchpad, against `ng serve`; to hit the live API from localhost, route
 ## Environment
 
 - Bun 1.4.x, Node 26, Angular 21. `gh` authenticated as DavisSylvester.
-- Contact channel credentials belong in Secrets Manager `gh-app-contact-prod` (account
-  318205107378, profile `dsylvesteriii`); locally in env vars (`RESEND_API_KEY`,
-  `CONTACT_EMAIL_FROM`, `TWILIO_*`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`,
-  `SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`). Only Telegram has real values in the secret.
+- Contact channel settings belong in Secrets Manager `gh-app-contact-prod` (account
+  318205107378, profile `dsylvesteriii`); locally in env vars (`CONTACT_EMAIL_FROM`,
+  `CONTACT_SMS_ORIGINATION_IDENTITY`, `CONTACT_WHATSAPP_*`, `TELEGRAM_BOT_TOKEN`,
+  `TELEGRAM_CHAT_ID`, `SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`). Email, SMS and WhatsApp use
+  AWS (SES / End User Messaging) through the Lambda role, so they need no keys. Email is live
+  (`CONTACT_EMAIL_FROM` set in CDK). Of the secret's keys, only Telegram has real values.
 - Repo `.env` (gitignored) holds `TELEGRAM_TOKEN` and `TELEGRAM_BOT_NAME=davis_resume_web_bot`.
   Note the API's local env var is `TELEGRAM_BOT_TOKEN`, not `TELEGRAM_TOKEN`.
 - Writing Secrets Manager is blocked for Claude in auto mode, so the user runs the
