@@ -65,3 +65,64 @@ awaits the user's OK to delete it remotely.
 **Left unfinished:** delete the merged branch; e2e not in CI; Claude Design redesign not
 started; carried forward from earlier: missing Expertise logos, "0 reviews" tile, no UI ESLint,
 bjj-open-mat promo uncommitted, plaintext GCP key file.
+
+## 2026-10-18 (evening): contact modal (PR #12)
+
+**Ask.** Make the Contact button open a modal where a visitor requests consulting services,
+a resume or employment, and chooses to be answered by WhatsApp (giving their WhatsApp id),
+SMS (phone number) or email; deliver the request to Davis on all channels plus Telegram.
+Mid-task the user added Slack and Teams.
+
+**Built.** Backend inside the existing activity API: `POST /contact` → `DefaultContactService`
+(honeypot, channel-aware reply-to validation, 5/hour per-IP limit in DynamoDB, audit copy,
+parallel fan-out to six notifiers). CDK adds the `gh-app-contact-prod` secret with
+`REPLACE_ME` placeholders, env vars and the route. Frontend: a native `<dialog>` with a
+reactive form, a shared open/close signal service, and navbar buttons wired to it.
+`docs/contact-form.md` covers setup.
+
+**Failures along the way.**
+- Long bash heredocs holding several files broke on quoting and created only some of them;
+  wrote files with the Write tool (or a script file) instead.
+- `scripts/collect-local.mts` builds an `AppConfig` literal and failed type-check until it got
+  a `contact` block.
+- Unit tests could not select radios by value: `[value]` with `formControlName` goes to the
+  Angular accessor, so the DOM value is `on`. Added `[attr.value]`.
+- Browser screenshots showed two options highlighted per group. Added native `name`s, but the
+  real cause was the 150 ms fade; after a 400 ms wait the computed styles were correct.
+- The phone half of the browser check timed out: the 6th local send hit the 5/hour limit
+  (all local requests share IP `local`). Restarted `dev.mts` with a higher limit.
+- The `ng serve` child node kept port 4300 after the task was stopped; killed by PID.
+- `gh pr merge` was denied by the auto-mode classifier; the user merged with `!`.
+
+**Shipped.** Commit `9ddeae7`, PR #12, CI and GitGuardian passed, merged as `bf7fb94`,
+"Deploy to AWS" succeeded. Live checks: preflight 204, invalid POST 400, secret present and
+tagged. No real message was sent.
+
+**Left unfinished:** every channel's credentials (user); a real delivery test; Resend domain and
+Twilio registrations; confirm the contact email; dialog SCSS budget warning; delete the merged
+branch. Carried forward: missing Expertise logos, "0 reviews" tile, no UI ESLint, e2e not in CI,
+Claude Design redesign, bjj-open-mat items.
+
+## 2026-10-18 (night): Telegram channel goes live
+
+**Ask.** Finish Telegram first, then switch it to a dedicated bot, @davis_resume_web_bot.
+
+**Done.**
+- Put @YtDailySubBot's token and chat id (from `yt-sub-digest/.env`) into `gh-app-contact-prod`
+  with a merge-keys script the user ran (Claude's own `put-secret-value` was denied by auto mode).
+  A live `POST /contact` at 07:22 UTC returned 202 `delivered: ["telegram"]`; the user received it.
+- The user asked for its own bot. The token was in the repo `.env` (`TELEGRAM_TOKEN`,
+  `TELEGRAM_BOT_NAME`). `getMe` confirmed the username; `getUpdates` had no chat until the user
+  sent `/start`. The user ran the updated script (saved 07:29:33 and again 07:29:59 UTC, same values).
+  A direct `sendMessage` from the new bot reached the user's chat (confirmed).
+
+**Failures along the way.**
+- First live test returned 503 `not_configured`: the Lambda's 15-min secret cache still held the
+  `REPLACE_ME` values. Logs showed `delivered: []` for requests at 06:51 and 07:00 UTC.
+- A "sleep until 07:06:40" used `date -d` without a zone, which Git Bash read as local CDT time, so
+  the retest would have fired ~5 hours late. Killed it and sent the request directly.
+- `aws logs tail` failed until run with `MSYS_NO_PATHCONV=1`.
+
+**Left unfinished:** confirming a live form submission arrives from @davis_resume_web_bot — the
+07:37:30 UTC live test returned 202 `delivered: ["telegram"]`, sender not yet confirmed by the user; the other five channels' credentials;
+everything carried forward in todo.md.
