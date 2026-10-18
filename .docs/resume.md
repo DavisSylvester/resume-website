@@ -2,11 +2,22 @@
 
 ## Where to pick up
 
-All PRs (#6 to #10) are merged and deployed, and the merged feature branches are deleted.
-Next, pick from `.docs/todo.md`. The quickest wins are the
-three missing Expertise logos and wiring `bun run e2e` into CI. If the user brings back a
-Claude Design redesign, build it on `_breakpoints.scss` and the fluid tokens in `styles.scss`,
-and keep the e2e sweep green.
+PR #12 (contact modal) is merged and deployed. **Telegram is live** (2026-10-18) and now uses
+the dedicated bot **@davis_resume_web_bot**: its token (`TELEGRAM_TOKEN` in the gitignored repo
+`.env`) and the user's private chat id are in `gh-app-contact-prod`. First thing: if the todo for
+the live form test via the new bot is still open, send one `POST /contact` (curl below) and
+confirm the user gets it from @davis_resume_web_bot. Email, SMS, WhatsApp, Slack and Teams are
+still `REPLACE_ME`; add each the same way (see `docs/contact-form.md`). Other open items are in
+`.docs/todo.md`.
+
+Test request (counts toward the 5/hour per-IP limit; sends a real message):
+
+```bash
+curl -s -X POST https://etgzi1pkz8.execute-api.us-east-1.amazonaws.com/contact \
+  -H 'content-type: application/json' -H 'origin: https://www.dsylvester.io' \
+  -d '{"name":"Claude test","reason":"consulting","replyVia":"email","replyTo":"dsylvesteriii@gmail.com","message":"test","website":""}'
+# expect 202 {"id":"…","delivered":["telegram"]}
+```
 
 ## Paths
 
@@ -55,6 +66,22 @@ Responsive pass (PR #9)
   `@playwright/test` dev dependency; `e2e` script
 - `.gitignore` — `ai/screenshots/`, `test-results/`, `playwright-report/`
 
+Contact modal (PR #12)
+- `docs/contact-form.md` — new; flow, API contract, per-channel setup, local dev
+- `src/ui/src/app/contact/` — new; `contact-options.ts` (reasons, reply channels, `isValidReplyTo`),
+  `contact-api.service.ts`, `contact-dialog.service.ts` (open/close signal), `interfaces/`
+- `src/ui/src/app/components/contact-dialog/*` — new; native `<dialog>` + reactive form, 8 tests
+- `components/navbar/*` — Contact links became buttons that open the modal; 2 new tests
+- `src/ui/src/app/app.ts` — renders `<app-contact-dialog>`
+- `src/api/activity/src/clients/contact/` — new; one notifier per channel, secrets providers, `cleanSecrets`
+- `src/api/activity/src/services/contact/` — new; `DefaultContactService`, `validateReplyTo`, message formatting
+- `src/api/activity/src/repositories/*contact-repository.mts` — new; DynamoDB + in-memory
+- `src/api/activity/src/routes/activity-router.mts` — `POST`/`OPTIONS /contact`; CORS now allows POST
+- `src/api/activity/index.mts` — sets `x-source-ip` from API Gateway; `dev.mts` uses the in-memory contact repo
+- `src/api/activity/src/schemas/` (`contact.schema.mts`, `env.schema.mts`), `types/`, `interfaces/i-contact-*`, `errors/contact-error.mts`
+- `src/api/activity/test/contact-*.test.mts` (new), `router.test.mts` (4 route tests)
+- `infrastructure/cdk/lib/activity-api.ts` — `ContactSecret`, `CONTACT_*` env vars, `/contact` route, outputs
+
 ## Commands
 
 ```bash
@@ -65,6 +92,11 @@ npx ng serve --port 4300      # dev server (restart after angular.json changes)
 bun run e2e                   # responsive sweep; reuses :4200 or starts ng serve
 E2E_BASE_URL=http://localhost:4300 bun run e2e      # against another server
 E2E_BASE_URL=https://www.dsylvester.io bun run e2e  # against production
+# contact: local API with mock or real channels; the UI on :4200 posts to :3100
+cd src/api/activity && CONTACT_RATE_LIMIT_PER_HOUR=100 SLACK_WEBHOOK_URL=... bun dev.mts
+# set channel credentials (JSON file from your password manager; delete it afterwards)
+aws secretsmanager put-secret-value --profile dsylvesteriii --secret-id gh-app-contact-prod --secret-string file://contact-secret.json
+gh pr merge <n> --merge         # the user runs this; blocked for Claude in auto mode
 gh pr view 8 --json mergeStateStatus,statusCheckRollup
 gh run list --branch main --limit 2   # watch the deploy after a merge
 ```
@@ -80,6 +112,10 @@ scratchpad, against `ng serve`; to hit the live API from localhost, route
 - **Sweep / responsive sweep** — `e2e/responsive.spec.ts`: 8 widths × 4 pages plus the cert-row and nav checks.
   Screenshots go to `ai/screenshots/responsive/` (gitignored); pre-change ones are in `ai/screenshots/baseline/`.
 - **base / sm / md / lg / xl** — the breakpoints in `_breakpoints.scss` (0 / 600 / 900 / 1200 / 1536).
+- **Contact modal / contact dialog** — `<app-contact-dialog>`; opened by the navbar Contact buttons.
+- **Reply channel** (`replyVia`) — how the *visitor* wants to be answered: whatsapp, sms, email.
+  **Notify channel** — where Davis *receives* the request: email, sms, whatsapp, telegram, slack, teams.
+- **Skipped** — a notify channel with no credentials (or `REPLACE_ME`); not a failure.
 - **Professional Projects** — the home-page accent band (component still named `Projects`,
   anchor `#projects`).
 
@@ -96,4 +132,12 @@ scratchpad, against `ng serve`; to hit the live API from localhost, route
 ## Environment
 
 - Bun 1.4.x, Node 26, Angular 21. `gh` authenticated as DavisSylvester.
-- No secrets were created this session.
+- Contact channel credentials belong in Secrets Manager `gh-app-contact-prod` (account
+  318205107378, profile `dsylvesteriii`); locally in env vars (`RESEND_API_KEY`,
+  `CONTACT_EMAIL_FROM`, `TWILIO_*`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`,
+  `SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`). Only Telegram has real values in the secret.
+- Repo `.env` (gitignored) holds `TELEGRAM_TOKEN` and `TELEGRAM_BOT_NAME=davis_resume_web_bot`.
+  Note the API's local env var is `TELEGRAM_BOT_TOKEN`, not `TELEGRAM_TOKEN`.
+- Writing Secrets Manager is blocked for Claude in auto mode, so the user runs the
+  put-secret-value step (Claude writes a script that merges keys and prints no values).
+- The Lambda caches the secret for 15 min; after a secret change, wait that long before retesting.
