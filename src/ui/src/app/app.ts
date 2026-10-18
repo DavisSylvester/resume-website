@@ -1,6 +1,6 @@
 import { Badges } from './sections/badges/badges';
 
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Navbar } from './components/navbar/navbar';
 import { Footer } from './components/footer/footer';
 import { Hero } from './sections/hero/hero';
@@ -9,14 +9,12 @@ import { Experience } from './sections/experience/experience';
 import { Certifications } from './sections/certifications/certifications';
 import { Projects } from './sections/projects/projects';
 import { Router, RouterOutlet } from '@angular/router';
-import { NgIf } from '@angular/common';
 import { ContactDialog } from './components/contact-dialog/contact-dialog';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    NgIf,
     Navbar,
     Footer,
     Hero,
@@ -29,7 +27,8 @@ import { ContactDialog } from './components/contact-dialog/contact-dialog';
   ],
   template: `
     <app-navbar></app-navbar>
-    <main class="container" *ngIf="!isStandalonePage()">
+    @if (!isStandalonePage()) {
+    <main class="container">
       <section id="hero" class="section">
         <app-hero></app-hero>
       </section>
@@ -49,6 +48,7 @@ import { ContactDialog } from './components/contact-dialog/contact-dialog';
         <app-badges></app-badges>
       </section>
     </main>
+    }
     <router-outlet></router-outlet>
     <app-footer></app-footer>
     <app-contact-dialog></app-contact-dialog>
@@ -56,9 +56,11 @@ import { ContactDialog } from './components/contact-dialog/contact-dialog';
   styleUrl: './app.scss',
 })
 export class App {
+
   protected readonly title = signal('davis-resume');
-  constructor(private router: Router) {}
-  isStandalonePage() {
+  private readonly router: Router = inject(Router);
+
+  protected isStandalonePage(): boolean {
     return ['/print', '/activity', '/portfolio'].some((path) => this.router.url.startsWith(path));
   }
 }
