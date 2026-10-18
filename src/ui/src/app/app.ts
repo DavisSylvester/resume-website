@@ -61,6 +61,6 @@ export class App {
   private readonly router: Router = inject(Router);
 
   protected isStandalonePage(): boolean {
-    return ['/print', '/activity', '/portfolio'].some((path) => this.router.url.startsWith(path));
+    return ['/print', '/activity', '/portfolio', '/privacy', '/terms'].some((path) => this.router.url.startsWith(path));
   }
 }

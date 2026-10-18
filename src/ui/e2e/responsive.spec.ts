@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test';
  */
 
 const WIDTHS: number[] = [320, 390, 600, 768, 1024, 1280, 1440, 1920];
-const PAGES: string[] = ['/', '/about', '/portfolio', '/activity'];
+const PAGES: string[] = ['/', '/about', '/portfolio', '/activity', '/privacy', '/terms'];
 /** Below this width the navbar collapses into the drawer (the `md` breakpoint). */
 const NAV_DRAWER_MAX: number = 900;
 

@@ -43,11 +43,13 @@ Durable facts and decisions. Last updated 2026-10-18 (contact modal, PR #12).
 - **Contact = a modal (PR #12, 2026-10-18), no longer the footer.** Both navbar Contact
   buttons call `ContactDialogService.open()`; `<app-contact-dialog>` lives once in `app.ts`.
   The footer keeps `id="contact"` but nothing links to it now. Section links are rooted at `/`.
-- **Contact delivery fans out to six channels in parallel**: email (Resend), SMS and WhatsApp
-  (one Twilio account), Telegram (bot), Slack (incoming webhook), Teams (Workflows webhook,
-  Adaptive Card). The request succeeds if any one channel sends. Providers were picked by
-  Claude, not the user: Resend because the user already uses it (yt-sub-digest), Twilio
-  because one account covers both SMS and WhatsApp. The user added Slack and Teams mid-task.
+- **Contact delivery fans out to six channels in parallel**: email (Amazon SES), SMS (AWS End
+  User Messaging SMS), WhatsApp (AWS End User Messaging Social), Telegram (bot), Slack (incoming
+  webhook), Teams (Workflows webhook, Adaptive Card). The request succeeds if any one channel
+  sends. **The user chose AWS over Twilio/Resend on 2026-10-18, and confirmed "keep aws" after
+  a cost comparison**: about the same money at this volume, but no API keys (the Lambda role
+  sends), one bill, and SES already had `dsylvester.ai` verified. Don't propose Twilio again.
+  The user added Slack and Teams mid-task in PR #12.
 - **Contact lives inside the activity API Lambda**, not a new service: `POST /contact` on the
   same HTTP API and the same `gh-app-activity-api-prod` function, sharing its DynamoDB table
   (`pk=CONTACT` audit copy kept 365 days, `pk=CONTACT_RATE` hourly counters). Chosen to reuse
