@@ -16,7 +16,9 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1152.0",
     "@aws-sdk/client-lambda": "^3.1152.0",
+    "@aws-sdk/client-pinpoint-sms-voice-v2": "^3.1152.0",
     "@aws-sdk/client-secrets-manager": "^3.1152.0",
+    "@aws-sdk/client-socialmessaging": "^3.1152.0",
     "@aws-sdk/lib-dynamodb": "^3.1152.0",
     "@sinclair/typebox": "^0.34.52",
     "elysia": "^1.4.30",

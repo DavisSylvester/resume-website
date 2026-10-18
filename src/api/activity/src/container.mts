@@ -1,9 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { LambdaClient } from '@aws-sdk/client-lambda';
+import { PinpointSMSVoiceV2Client } from '@aws-sdk/client-pinpoint-sms-voice-v2';
 import { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import { SocialMessagingClient } from '@aws-sdk/client-socialmessaging';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import type { Logger } from 'winston';
 import {
+  AwsSmsNotifier,
+  AwsWhatsAppNotifier,
   EnvContactSecretsProvider,
   EnvCredentialsProvider,
   GitHubAppClient,
@@ -15,7 +19,6 @@ import {
   SlackNotifier,
   TeamsNotifier,
   TelegramNotifier,
-  TwilioNotifier,
 } from './clients/index.mjs';
 import type { FetchFn } from './clients/index.mjs';
 import { createLogger } from './config/create-logger.mjs';
@@ -117,8 +120,8 @@ export const createContainer = (env: Env, overrides: ContainerOverrides = {}): C
       : new EnvContactSecretsProvider(env));
   const notifiers: Notifier[] = overrides.notifiers ?? [
     new ResendEmailNotifier(contactSecrets, config.contact, fetchFn),
-    new TwilioNotifier('sms', contactSecrets, config.contact, fetchFn),
-    new TwilioNotifier('whatsapp', contactSecrets, config.contact, fetchFn),
+    new AwsSmsNotifier(contactSecrets, config.contact, new PinpointSMSVoiceV2Client({})),
+    new AwsWhatsAppNotifier(contactSecrets, config.contact, new SocialMessagingClient({})),
     new TelegramNotifier(contactSecrets, fetchFn),
     new SlackNotifier(contactSecrets, fetchFn),
     new TeamsNotifier(contactSecrets, fetchFn),

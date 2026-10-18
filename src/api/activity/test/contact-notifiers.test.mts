@@ -3,18 +3,21 @@
  * provider's expected request shape. No network: fetch is a recording fake.
  */
 import { describe, expect, test } from 'bun:test';
+import type { SendTextMessageCommand, SendTextMessageCommandOutput } from '@aws-sdk/client-pinpoint-sms-voice-v2';
+import type { SendWhatsAppMessageCommand, SendWhatsAppMessageCommandOutput } from '@aws-sdk/client-socialmessaging';
 import {
+  AwsSmsNotifier,
+  AwsWhatsAppNotifier,
   cleanSecrets,
   ResendEmailNotifier,
   SlackNotifier,
   TeamsNotifier,
   TelegramNotifier,
-  TwilioNotifier,
 } from '../src/clients/index.mjs';
 import { validateReplyTo } from '../src/services/contact/validate-reply-to.mjs';
 import { ok, NotifyOutcome } from '../src/types/index.mjs';
 import type { FetchFn } from '../src/clients/index.mjs';
-import type { ContactConfig, ContactMessage, ContactSecretsProvider } from '../src/interfaces/index.mjs';
+import type { ContactConfig, ContactMessage, ContactSecretsProvider, SmsClient, WhatsAppClient } from '../src/interfaces/index.mjs';
 import type { ContactSecrets, Result } from '../src/types/index.mjs';
 
 interface Call {
@@ -30,6 +33,33 @@ const recorder = (status: number = 200): { fetchFn: FetchFn; calls: Call[] } => 
   };
   return { fetchFn, calls };
 };
+
+/** Records the commands an AWS SDK client would send; `error` makes every send reject. */
+const smsFake = (error?: Error): { client: SmsClient; sent: SendTextMessageCommand[] } => {
+  const sent: SendTextMessageCommand[] = [];
+  const client: SmsClient = {
+    send: async (command: SendTextMessageCommand): Promise<SendTextMessageCommandOutput> => {
+      if (error) throw error;
+      sent.push(command);
+      return { MessageId: 'm1', $metadata: {} };
+    },
+  };
+  return { client, sent };
+};
+
+const whatsAppFake = (): { client: WhatsAppClient; sent: SendWhatsAppMessageCommand[] } => {
+  const sent: SendWhatsAppMessageCommand[] = [];
+  const client: WhatsAppClient = {
+    send: async (command: SendWhatsAppMessageCommand): Promise<SendWhatsAppMessageCommandOutput> => {
+      sent.push(command);
+      return { messageId: 'w1', $metadata: {} };
+    },
+  };
+  return { client, sent };
+};
+
+const whatsAppBody = (command: SendWhatsAppMessageCommand | undefined): Record<string, unknown> =>
+  JSON.parse(new TextDecoder().decode(command?.input.message)) as Record<string, unknown>;
 
 const secrets = (value: ContactSecrets): ContactSecretsProvider => ({
   get: async (): Promise<Result<ContactSecrets>> => ok(value),
@@ -54,17 +84,21 @@ const bodyOf = (call: Call | undefined): Record<string, unknown> => JSON.parse(S
 describe('notifiers', () => {
   test('every notifier is skipped when its credentials are missing', async () => {
     const { fetchFn, calls } = recorder();
+    const sms = smsFake();
+    const wa = whatsAppFake();
     const empty: ContactSecretsProvider = secrets({});
     const all = [
       new ResendEmailNotifier(empty, config, fetchFn),
-      new TwilioNotifier('sms', empty, config, fetchFn),
-      new TwilioNotifier('whatsapp', empty, config, fetchFn),
+      new AwsSmsNotifier(empty, config, sms.client),
+      new AwsWhatsAppNotifier(empty, config, wa.client),
       new TelegramNotifier(empty, fetchFn),
       new SlackNotifier(empty, fetchFn),
       new TeamsNotifier(empty, fetchFn),
     ];
     for (const n of all) expect(await n.send(message)).toEqual(ok(NotifyOutcome.Skipped));
     expect(calls).toHaveLength(0);
+    expect(sms.sent).toHaveLength(0);
+    expect(wa.sent).toHaveLength(0);
   });
 
   test('Resend sends to Davis with reply_to set to the visitor', async () => {
@@ -76,18 +110,50 @@ describe('notifiers', () => {
     expect((calls[0]?.init.headers as Record<string, string>)['authorization']).toBe('Bearer rk');
   });
 
-  test('Twilio WhatsApp prefixes both numbers; SMS does not', async () => {
-    const creds: ContactSecrets = { twilioAccountSid: 'AC1', twilioAuthToken: 't', twilioSmsFrom: '+15550001111', twilioWhatsAppFrom: '+14155238886' };
-    const { fetchFn, calls } = recorder();
-    await new TwilioNotifier('whatsapp', secrets(creds), config, fetchFn).send(message);
-    await new TwilioNotifier('sms', secrets(creds), config, fetchFn).send(message);
+  test('AWS SMS sends a transactional text from the origination identity to Davis', async () => {
+    const { client, sent } = smsFake();
+    const res = await new AwsSmsNotifier(secrets({ smsOriginationIdentity: 'phone-123' }), config, client).send(message);
+    expect(res).toEqual(ok(NotifyOutcome.Sent));
+    expect(sent[0]?.input).toMatchObject({
+      DestinationPhoneNumber: '+12145550100',
+      OriginationIdentity: 'phone-123',
+      MessageType: 'TRANSACTIONAL',
+    });
+    expect((sent[0]?.input.MessageBody ?? '').length).toBeLessThanOrEqual(600);
+  });
 
-    const wa: URLSearchParams = new URLSearchParams(String(calls[0]?.init.body));
-    const sms: URLSearchParams = new URLSearchParams(String(calls[1]?.init.body));
-    expect(calls[0]?.url).toBe('https://api.twilio.com/2010-04-01/Accounts/AC1/Messages.json');
-    expect([wa.get('From'), wa.get('To')]).toEqual(['whatsapp:+14155238886', 'whatsapp:+12145550100']);
-    expect([sms.get('From'), sms.get('To')]).toEqual(['+15550001111', '+12145550100']);
-    expect((sms.get('Body') ?? '').length).toBeLessThanOrEqual(600);
+  test('an AWS SMS error becomes a failed Result', async () => {
+    const { client } = smsFake(new Error('ConflictException'));
+    const res = await new AwsSmsNotifier(secrets({ smsOriginationIdentity: 'phone-123' }), config, client).send(message);
+    expect(!res.ok && res.error.message).toBe('AWS SMS request failed: ConflictException');
+  });
+
+  test('AWS WhatsApp sends free-form text when no template is set', async () => {
+    const { client, sent } = whatsAppFake();
+    await new AwsWhatsAppNotifier(secrets({ whatsAppPhoneNumberId: 'phone-number-id-1' }), config, client).send(message);
+    expect(sent[0]?.input.originationPhoneNumberId).toBe('phone-number-id-1');
+    expect(whatsAppBody(sent[0])).toMatchObject({ messaging_product: 'whatsapp', to: '+12145550100', type: 'text' });
+  });
+
+  test('AWS WhatsApp sends the template with single-line parameters', async () => {
+    const { client, sent } = whatsAppFake();
+    const multiline: ContactMessage = { ...message, message: 'Line one\n\n\tLine     two' };
+    await new AwsWhatsAppNotifier(
+      secrets({ whatsAppPhoneNumberId: 'phone-number-id-1', whatsAppTemplateName: 'contact_request' }),
+      config,
+      client,
+    ).send(multiline);
+
+    const body = whatsAppBody(sent[0]) as {
+      type: string;
+      template: { name: string; language: { code: string }; components: { parameters: { text: string }[] }[] };
+    };
+    expect(body.type).toBe('template');
+    expect(body.template.name).toBe('contact_request');
+    expect(body.template.language.code).toBe('en_US');
+    const params: string[] = (body.template.components[0]?.parameters ?? []).map((p: { text: string }): string => p.text);
+    expect(params[0]).toBe('Employment opportunity from Ada <script>');
+    expect(params[1]).toBe('Reply via Email: ada@example.com. Line one Line two');
   });
 
   test('Telegram posts plain text to the chat', async () => {

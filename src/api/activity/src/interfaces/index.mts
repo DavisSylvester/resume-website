@@ -25,3 +25,5 @@ export type * from './i-contact-secrets-provider.mjs';
 export type * from './i-notifier.mjs';
 export type * from './i-contact-repository.mjs';
 export type * from './i-contact-service.mjs';
+export type * from './i-sms-client.mjs';
+export type * from './i-whatsapp-client.mjs';

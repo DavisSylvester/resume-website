@@ -66,10 +66,13 @@ export class ActivityApi extends Construct {
 
     // RETAIN: survives `cdk destroy`. Channels left as REPLACE_ME are skipped by the API, so
     // each one can be switched on independently with `aws secretsmanager put-secret-value`.
+    // Do not edit the initial JSON below: a template change rewrites the live secret value.
+    // SMS and WhatsApp (AWS End User Messaging) need no keys, only these settings added to it:
+    // smsOriginationIdentity, whatsAppPhoneNumberId, whatsAppTemplateName, whatsAppTemplateLanguage.
     this.contactSecret = new secretsmanager.Secret(this, "ContactSecret", {
       secretName: resourceName(config, "contact"),
       description:
-        "Contact form channels: Resend (email), Twilio (SMS + WhatsApp), Telegram bot, Slack and Teams webhooks",
+        "Contact form channels: Resend (email), AWS End User Messaging (SMS + WhatsApp), Telegram bot, Slack and Teams webhooks",
       secretStringValue: SecretValue.unsafePlainText(
         JSON.stringify({
           resendApiKey: "REPLACE_ME",
@@ -131,6 +134,22 @@ export class ActivityApi extends Construct {
       new iam.PolicyStatement({
         actions: ["lambda:InvokeFunction"],
         resources: [`arn:aws:lambda:${region}:${account}:function:${functionName}`],
+      }),
+    );
+
+    // Contact SMS and WhatsApp go through AWS End User Messaging with the function's own role.
+    this.fn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["sms-voice:SendTextMessage"],
+        // SendTextMessage is authorized against the number/pool and also any opt-out list,
+        // configuration set or protect configuration it touches, so allow the account's SMS resources.
+        resources: [`arn:aws:sms-voice:${region}:${account}:*`],
+      }),
+    );
+    this.fn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["social-messaging:SendWhatsAppMessage"],
+        resources: [`arn:aws:social-messaging:${region}:${account}:phone-number-id/*`],
       }),
     );
 
