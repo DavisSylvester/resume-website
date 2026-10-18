@@ -1,3 +1,5 @@
+@use 'breakpoints' as bp;
+
 // Accent band: the one section on the home page that breaks out of the card palette.
 .pro-projects {
   --on-accent: #ffffff;
@@ -172,7 +174,7 @@
   align-self: flex-start;
 }
 
-@media (max-width: 560px) {
+@include bp.below(sm) {
   .pro-projects {
     padding: 1.75rem 1.1rem;
     border-radius: 16px;

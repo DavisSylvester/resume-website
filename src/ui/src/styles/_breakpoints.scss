@@ -1,0 +1,31 @@
+@use 'sass:map';
+
+/*
+ * Mobile-first breakpoints. Base styles target phones; wrap anything wider in
+ * `@include bp.up(<name>)`. Every component uses these so layouts step together.
+ *
+ *   base  0–599     phones
+ *   sm    600px     large phones, small tablets (portrait)
+ *   md    900px     tablets (landscape), small laptops
+ *   lg    1200px    desktop
+ *   xl    1536px    wide desktop
+ */
+$breakpoints: (
+  sm: 600px,
+  md: 900px,
+  lg: 1200px,
+  xl: 1536px,
+);
+
+@mixin up($name) {
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+/* For the rare rule that only applies below a breakpoint (e.g. the mobile nav drawer). */
+@mixin below($name) {
+  @media (max-width: (map.get($breakpoints, $name) - 0.02px)) {
+    @content;
+  }
+}
