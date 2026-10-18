@@ -30,7 +30,7 @@
 }
 .certifications .logo-card img {
   width: auto;
-  max-width: 240px; /* doubled */
+  max-width: min(240px, 100%); /* doubled, but never wider than its card */
   max-height: 112px; /* doubled */
   height: auto;
   object-fit: contain;

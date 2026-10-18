@@ -12,4 +12,6 @@ import type { PortfolioProject } from '../interfaces';
 export class StoreLinks {
 
   public readonly project: InputSignal<PortfolioProject> = input.required<PortfolioProject>();
+  /** Light-on-accent styling, for use on an accent-colored background. */
+  public readonly onAccent: InputSignal<boolean> = input<boolean>(false);
 }

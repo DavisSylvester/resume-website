@@ -71,7 +71,7 @@ app-root {
 /* Unified card design */
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 1.5rem;
 }
 .card {
@@ -115,7 +115,7 @@ p {
   box-sizing: border-box;
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 1rem;
   }
   .card {
@@ -239,8 +239,24 @@ p {
 /* Expertise */
 .expertise .grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1.25rem;
+}
+/* Six columns only fit on wide screens; step down so the grid never forces sideways scroll. */
+@media (max-width: 1280px) {
+  .expertise .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .expertise .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .expertise .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .expertise h3 {
   color: var(--accent);
@@ -282,181 +298,6 @@ p {
   a {
     color: #000 !important;
     text-decoration: underline;
-  }
-}
-
-/* Projects section (global styles) */
-.projects h2 {
-  color: var(--accent);
-  margin-bottom: 1rem;
-}
-.project-card {
-  background: var(--card);
-  border: 1px solid #e3e6ea;
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-}
-.project-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-.project-header .logo {
-  width: 50px;
-  height: 50px;
-  border-radius: 999px;
-  background: #c0c0c0;
-  border: 2px solid color-mix(in srgb, var(--accent) 60%, var(--secondary));
-  color: #1a1a1a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-.project-header .logo img {
-  width: 100%;
-  height: 100%;
-  border-radius: 999px;
-  object-fit: contain;
-  background: #fff;
-}
-.project-header .headings h3 {
-  margin: 0;
-}
-.project-header .role {
-  color: var(--muted);
-  margin: 0.25rem 0 0;
-}
-.project-header .subrole {
-  color: var(--muted);
-  margin: 0.15rem 0 0;
-  font-style: italic;
-}
-.project-header .dates {
-  color: var(--muted);
-  margin: 0.15rem 0 0;
-  font-size: 0.95rem;
-}
-.description {
-  color: var(--muted);
-  margin: 0.5rem 0 1rem;
-}
-.feature-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.6rem;
-  margin: 0.4rem 0 0.9rem;
-}
-.feature.card {
-  background: #f8f9fb;
-  border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--secondary) 20%, #e3e6ea);
-}
-.feature.card h4 {
-  margin: 0 0 0.3rem;
-  color: var(--text);
-  font-weight: 700;
-}
-.feature.card h4 .icon {
-  margin-right: 0.35rem;
-}
-.feature.card p {
-  margin: 0;
-  color: #565656;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-.tech-chips {
-  margin-top: 0.6rem;
-}
-.tech-chips .chip {
-  background: color-mix(in srgb, var(--accent) 18%, var(--secondary));
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--secondary));
-  color: #000000;
-  font-weight: 800;
-}
-.timeline {
-  position: relative;
-  margin-top: 2rem;
-}
-.timeline .line {
-  height: 2px;
-  background: color-mix(in srgb, var(--accent) 45%, var(--abbey));
-  border-radius: 2px;
-}
-.timeline .events {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-.timeline .event {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-.timeline .event span {
-  color: var(--accent);
-  font-weight: 600;
-  margin-right: 0.35rem;
-}
-
-/* Responsive tweaks for Projects */
-@media (max-width: 768px) {
-  .project-card {
-    padding: 0.85rem 1rem;
-  }
-  .project-header {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  .project-header .logo {
-    width: 42px;
-    height: 42px;
-  }
-  .project-header .headings {
-    flex: 1 1 100%;
-  }
-  .project-header .headings h3 {
-    font-size: 1.05rem;
-  }
-  .project-header .role,
-  .project-header .subrole,
-  .project-header .dates {
-    font-size: 0.9rem;
-  }
-  .description {
-    font-size: 0.95rem;
-  }
-  .feature-cards {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-  .tech-chips {
-    margin-top: 0.5rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .timeline .events {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .project-header .logo {
-    width: 36px;
-    height: 36px;
-  }
-  .project-card {
-    padding: 0.75rem 0.9rem;
-  }
-  .feature.card h4 {
-    font-size: 1rem;
   }
 }
 
