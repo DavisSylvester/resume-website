@@ -22,16 +22,17 @@ export const ContactRequestSchema = Type.Object({
 });
 
 /**
- * The contact secret in Secrets Manager. Every field is optional: a channel whose
+ * The contact secret in Secrets Manager (channel credentials and settings). Every field is optional: a channel whose
  * credentials are missing (or still `REPLACE_ME`) is skipped rather than failing the request.
  */
 export const ContactSecretsSchema = Type.Object({
-  resendApiKey: Type.Optional(Type.String()),
-  emailFrom: Type.Optional(Type.String()),
-  twilioAccountSid: Type.Optional(Type.String()),
-  twilioAuthToken: Type.Optional(Type.String()),
-  twilioSmsFrom: Type.Optional(Type.String()),
-  twilioWhatsAppFrom: Type.Optional(Type.String()),
+  /** AWS End User Messaging SMS origination identity: phone number id/ARN or pool id. */
+  smsOriginationIdentity: Type.Optional(Type.String()),
+  /** AWS End User Messaging Social WhatsApp phone number id (`phone-number-id-…`). */
+  whatsAppPhoneNumberId: Type.Optional(Type.String()),
+  /** Approved Meta template with two body parameters; without it only free-form text is sent. */
+  whatsAppTemplateName: Type.Optional(Type.String()),
+  whatsAppTemplateLanguage: Type.Optional(Type.String()),
   telegramBotToken: Type.Optional(Type.String()),
   telegramChatId: Type.Optional(Type.String()),
   slackWebhookUrl: Type.Optional(Type.String()),

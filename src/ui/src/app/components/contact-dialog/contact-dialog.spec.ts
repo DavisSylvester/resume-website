@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ContactApiService } from '../../contact/contact-api.service';
 import type { ContactResult } from '../../contact/contact-api.service';
 import { ContactDialogService } from '../../contact/contact-dialog.service';

@@ -30,6 +30,13 @@ export const iacTile = (tool: string, stats: IacToolStat[]): Tile => {
   };
 };
 
+/**
+ * Reviews on private organization repos only reach GitHub's restricted total, so the review
+ * count is usually 0 even when reviews were given; say nothing rather than "0 reviews".
+ */
+export const pullRequestNote = (reviews: number): string =>
+  reviews > 0 ? `${whole.format(reviews)} ${reviews === 1 ? 'review' : 'reviews'} given` : 'last 12 months';
+
 const WEEKDAYS: string[] = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays'];
 
 export const relativeTime = (iso: string, now: number): string => {
@@ -71,7 +78,7 @@ export class Activity implements OnInit, OnDestroy {
       { label: 'Public commits', value: whole.format(t.publicCommits), note: `across ${s.repos.length} public repositories` },
       { label: 'Lines added', value: compact.format(t.linesAdded), note: `${compact.format(t.linesDeleted)} deleted, public repos` },
       { label: 'Current streak', value: `${s.streak.current} days`, note: `longest ${s.streak.longest} days` },
-      { label: 'Pull requests', value: whole.format(t.pullRequests), note: `${whole.format(t.reviews)} reviews` },
+      { label: 'Pull requests', value: whole.format(t.pullRequests), note: pullRequestNote(t.reviews) },
       ...IAC_KPI_TOOLS.map((tool: string): Tile => iacTile(tool, s.insights?.iac.tools ?? [])),
     ];
   });

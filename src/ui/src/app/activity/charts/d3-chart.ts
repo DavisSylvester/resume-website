@@ -1,5 +1,5 @@
-import { Directive, ElementRef, afterNextRender, effect, input, signal, viewChild } from '@angular/core';
-import type { InputSignal, OnDestroy, Signal, WritableSignal } from '@angular/core';
+import { Directive, afterNextRender, effect, input, signal, viewChild } from '@angular/core';
+import type { InputSignal, OnDestroy, Signal, WritableSignal, ElementRef } from '@angular/core';
 import type { TooltipRow } from '../interfaces';
 
 /** Reads a CSS custom property from the chart host, so colors stay in SCSS tokens. */

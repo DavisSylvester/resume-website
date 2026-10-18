@@ -1,14 +1,5 @@
-import {
-  Component,
-  DestroyRef,
-  ElementRef,
-  computed,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
-import type { Signal, WritableSignal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal, viewChild } from '@angular/core';
+import type { Signal, WritableSignal, ElementRef } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import type { Subscription } from 'rxjs';

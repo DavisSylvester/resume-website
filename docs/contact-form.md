@@ -51,9 +51,9 @@ creates with every value set to `REPLACE_ME`. **A channel whose values are missi
 
 | Channel  | Provider | Secret keys | Setup |
 |----------|----------|-------------|-------|
-| Email    | Resend | `resendApiKey`, `emailFrom` | Verify a sending domain in Resend (e.g. `dsylvester.io`); `emailFrom` like `Website <contact@dsylvester.io>`. Replies go to the visitor when they chose email. |
-| SMS      | Twilio | `twilioAccountSid`, `twilioAuthToken`, `twilioSmsFrom` | A Twilio number in E.164. US numbers need A2P 10DLC or toll-free verification before carriers deliver. |
-| WhatsApp | Twilio | same SID/token + `twilioWhatsAppFrom` | Sandbox (`+14155238886`) works for testing once you've joined it from your phone, but sandbox sessions expire. Production needs an approved WhatsApp sender. |
+| Email    | Amazon SES | none (env `CONTACT_EMAIL_FROM`) | No keys: the role is allowed `ses:SendEmail` on the `dsylvester.ai` identity, which is already verified with DKIM, and the account has SES production access. CDK sets the sender to `Davis Sylvester website <contact@dsylvester.ai>`. Replies go to the visitor when they chose email. |
+| SMS      | AWS End User Messaging SMS | `smsOriginationIdentity` | No keys: the Lambda role is allowed `sms-voice:SendTextMessage`. Request a toll-free number in us-east-1 (End User Messaging → Phone numbers) and complete its registration; carriers block unregistered US traffic. The value is the phone number id/ARN or a pool id. While the account is in the SMS sandbox, also verify `CONTACT_PHONE_TO` as a destination. |
+| WhatsApp | AWS End User Messaging Social | `whatsAppPhoneNumberId`, optional `whatsAppTemplateName`, `whatsAppTemplateLanguage` (default `en_US`) | No keys: the role is allowed `social-messaging:SendWhatsAppMessage`. In End User Messaging → WhatsApp, link a WhatsApp Business Account and a sender number (not the number that receives, `CONTACT_PHONE_TO`); the value is its `phone-number-id-…`. Meta only delivers free-form text within 24 h of your last message to that number, so create a Utility template (e.g. `contact_request`, body `New contact request: {{1}}. {{2}}`) and set its name; the API fills {{1}} with the subject and {{2}} with the reply channel and message. |
 | Telegram | Bot API | `telegramBotToken`, `telegramChatId` | Create a bot with @BotFather, message it, then read `chat.id` from `https://api.telegram.org/bot<token>/getUpdates`. |
 | Slack    | Incoming webhook | `slackWebhookUrl` | Slack app → Incoming Webhooks → add to a channel. |
 | Teams    | Workflows webhook | `teamsWebhookUrl` | In the channel: Workflows → "Post to a channel when a webhook request is received". The payload is an Adaptive Card. |
@@ -76,8 +76,9 @@ SLACK_WEBHOOK_URL=... TELEGRAM_BOT_TOKEN=... TELEGRAM_CHAT_ID=... bun dev.mts   
 cd src/ui && npx ng serve                                                        # :4200, posts to :3100
 ```
 
-Locally the channel credentials come from env vars (`RESEND_API_KEY`, `CONTACT_EMAIL_FROM`,
-`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_SMS_FROM`, `TWILIO_WHATSAPP_FROM`,
+Locally the channel settings come from env vars (`CONTACT_EMAIL_FROM`,
+`CONTACT_SMS_ORIGINATION_IDENTITY`, `CONTACT_WHATSAPP_PHONE_NUMBER_ID`, `CONTACT_WHATSAPP_TEMPLATE`,
+`CONTACT_WHATSAPP_TEMPLATE_LANGUAGE`, with AWS credentials from your profile for email, SMS and WhatsApp,
 `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`), and the
 rate limit and audit log are in memory. Every local request shares the source IP `local`, so raise
 `CONTACT_RATE_LIMIT_PER_HOUR` when testing repeatedly.
@@ -88,4 +89,6 @@ rate limit and audit log are in memory. Every local request shares the source IP
   `src/ui/src/app/components/contact-dialog/`
 - API: `src/api/activity/src/services/contact/`, `src/clients/contact/` (one notifier per channel),
   `src/repositories/*contact-repository.mts`, `POST /contact` in `src/routes/activity-router.mts`
-- Infra: `ContactSecret` and the `/contact` route in `infrastructure/cdk/lib/activity-api.ts`
+- Infra: `ContactSecret`, the SES and End User Messaging IAM grants and the `/contact` route in
+  `infrastructure/cdk/lib/activity-api.ts`. Don't edit the secret's initial JSON there: a template
+  change rewrites the live secret. Add new keys with `put-secret-value` instead.

@@ -15,12 +15,10 @@ export class EnvContactSecretsProvider implements ContactSecretsProvider {
   public async get(): Promise<Result<ContactSecrets>> {
     return ok(
       cleanSecrets({
-        resendApiKey: this.env.RESEND_API_KEY,
-        emailFrom: this.env.CONTACT_EMAIL_FROM,
-        twilioAccountSid: this.env.TWILIO_ACCOUNT_SID,
-        twilioAuthToken: this.env.TWILIO_AUTH_TOKEN,
-        twilioSmsFrom: this.env.TWILIO_SMS_FROM,
-        twilioWhatsAppFrom: this.env.TWILIO_WHATSAPP_FROM,
+        smsOriginationIdentity: this.env.CONTACT_SMS_ORIGINATION_IDENTITY,
+        whatsAppPhoneNumberId: this.env.CONTACT_WHATSAPP_PHONE_NUMBER_ID,
+        whatsAppTemplateName: this.env.CONTACT_WHATSAPP_TEMPLATE,
+        whatsAppTemplateLanguage: this.env.CONTACT_WHATSAPP_TEMPLATE_LANGUAGE,
         telegramBotToken: this.env.TELEGRAM_BOT_TOKEN,
         telegramChatId: this.env.TELEGRAM_CHAT_ID,
         slackWebhookUrl: this.env.SLACK_WEBHOOK_URL,

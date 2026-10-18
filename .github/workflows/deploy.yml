@@ -62,11 +62,38 @@ jobs:
         working-directory: src/api/activity
         run: bun test
 
-      - name: UI - install and build
+      - name: UI - install
+        working-directory: src/ui
+        run: bun install --frozen-lockfile
+
+      - name: UI - lint
+        working-directory: src/ui
+        run: bun run lint
+
+      - name: UI - unit tests
+        working-directory: src/ui
+        run: npx ng test --watch=false
+
+      - name: UI - build
+        working-directory: src/ui
+        run: bun run build
+
+      # Responsive sweep (8 widths x 4 pages, cert row, navbar). Playwright starts `ng serve`.
+      - name: UI - e2e
         working-directory: src/ui
         run: |
-          bun install --frozen-lockfile
-          bun run build
+          npx playwright install --with-deps chromium
+          bun run e2e
+
+      - name: UI - upload e2e report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            src/ui/test-results/
+            src/ui/ai/screenshots/responsive/
+          if-no-files-found: ignore
 
       - name: Infrastructure - install and type-check
         working-directory: infrastructure/cdk

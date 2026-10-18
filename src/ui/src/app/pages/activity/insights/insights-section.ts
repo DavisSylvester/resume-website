@@ -164,7 +164,8 @@ export class InsightsSection {
       { label: 'Pull requests opened', value: whole.format(p.opened), note: 'last 12 months' },
       { label: 'Merged', value: whole.format(p.merged), note: `${pct.format(ratio(p.merged, p.opened))} merge rate` },
       { label: 'Median time to merge', value: durationLabel(p.medianHoursToMerge), note: 'opened to merged' },
-      { label: 'Reviews given', value: whole.format(p.reviews), note: 'pull request reviews' },
+      // Hidden at 0: reviews on private org repos only count toward GitHub's restricted total.
+      ...(p.reviews > 0 ? [{ label: 'Reviews given', value: whole.format(p.reviews), note: 'pull request reviews' }] : []),
     ];
   });
 

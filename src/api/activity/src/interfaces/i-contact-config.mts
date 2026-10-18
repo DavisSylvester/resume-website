@@ -3,6 +3,8 @@ export interface ContactConfig {
   /** Secrets Manager ARN for the channel credentials; null locally (env vars are used). */
   secretArn: string | null;
   emailTo: string;
+  /** SES sender; null skips the email channel. */
+  emailFrom: string | null;
   /** E.164 number that receives SMS and WhatsApp notifications. */
   phoneTo: string;
   rateLimitPerHour: number;

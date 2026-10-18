@@ -34,7 +34,7 @@ const container: Container = createContainer(
   loadEnv({ ...process.env, GITHUB_LOGIN: process.env['GITHUB_LOGIN'] ?? 'DavisSylvester', TABLE_NAME: 'local' }),
   {
     repository: new InMemoryActivityRepository(seed),
-    // Contact channels read RESEND_API_KEY, TWILIO_*, TELEGRAM_*, SLACK_WEBHOOK_URL, TEAMS_WEBHOOK_URL.
+    // Contact channels read CONTACT_EMAIL_FROM, CONTACT_SMS_*/CONTACT_WHATSAPP_* (all three use your AWS creds), TELEGRAM_*, SLACK_WEBHOOK_URL, TEAMS_WEBHOOK_URL.
     contactRepository: new InMemoryContactRepository(),
     collector: devCollector,
     credentials: {

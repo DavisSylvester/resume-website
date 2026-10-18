@@ -11,7 +11,7 @@ import type { ContactConfig, ContactMessage, ContactRepository, Notifier } from 
 import type { ContactRequest, NotifyChannel as Channel, NotifyOutcome as Outcome, Result } from '../src/types/index.mjs';
 import { fixedClock, silentLogger } from './helpers.mjs';
 
-const config: ContactConfig = { secretArn: null, emailTo: 'davis@example.com', phoneTo: '+12145550100', rateLimitPerHour: 2 };
+const config: ContactConfig = { secretArn: null, emailTo: 'davis@example.com', emailFrom: null, phoneTo: '+12145550100', rateLimitPerHour: 2 };
 
 const request = (overrides: Partial<ContactRequest> = {}): ContactRequest => ({
   name: ' Ada Lovelace ',
