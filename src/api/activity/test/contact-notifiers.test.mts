@@ -143,6 +143,7 @@ describe('notifiers', () => {
       MessageType: 'TRANSACTIONAL',
     });
     expect((sent[0]?.input.MessageBody ?? '').length).toBeLessThanOrEqual(600);
+    expect(sent[0]?.input.MessageBody).toEndWith('\nReply STOP to opt out.');
   });
 
   test('an AWS SMS error becomes a failed Result', async () => {
