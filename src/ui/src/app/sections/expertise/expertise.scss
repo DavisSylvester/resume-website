@@ -1,14 +1,27 @@
+@use 'breakpoints' as bp;
+
+/* Smaller tiles on phones fit three per row instead of two; full size from sm up. */
 .logo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
-  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 84px), 1fr));
+  gap: 0.6rem;
   align-items: center;
+
+  @include bp.up(sm) {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
+    gap: 0.9rem;
+  }
 }
 .logo-tile {
   background: #fff;
   border: 1px solid #e3e6ea;
   border-radius: 12px;
-  padding: 12px 10px 10px;
+  padding: 10px 6px 8px;
+  min-width: 0;
+
+  @include bp.up(sm) {
+    padding: 12px 10px 10px;
+  }
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,15 +30,24 @@
 .logo-tile img {
   width: 100%;
   max-width: 120px;
-  height: 56px;
+  height: 44px;
   object-fit: contain;
+
+  @include bp.up(sm) {
+    height: 56px;
+  }
 }
 .logo-label {
   margin-top: 6px;
   color: var(--accent);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-align: center;
+  overflow-wrap: anywhere;
+
+  @include bp.up(sm) {
+    font-size: 0.85rem;
+  }
 }
 .logo-tile:hover {
   border-color: color-mix(in srgb, var(--accent) 35%, #e3e6ea);

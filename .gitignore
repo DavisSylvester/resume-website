@@ -49,3 +49,7 @@ dist/
 node_modules/
 .env
 .angular/
+# Playwright output
+ai/screenshots/
+test-results/
+playwright-report/

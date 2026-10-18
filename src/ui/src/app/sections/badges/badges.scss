@@ -1,3 +1,5 @@
+@use 'breakpoints' as bp;
+
 .badges h2 {
   color: var(--accent);
 }
@@ -17,5 +19,16 @@
   outline-offset: 2px;
 }
 .badges img {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
   border-radius: 8px;
+
+  @include bp.up(sm) {
+    width: 96px;
+    height: 96px;
+  }
+}
+.badges h3 {
+  overflow-wrap: anywhere;
 }
