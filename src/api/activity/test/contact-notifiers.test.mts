@@ -4,12 +4,13 @@
  */
 import { describe, expect, test } from 'bun:test';
 import type { SendTextMessageCommand, SendTextMessageCommandOutput } from '@aws-sdk/client-pinpoint-sms-voice-v2';
+import type { SendEmailCommand, SendEmailCommandOutput } from '@aws-sdk/client-sesv2';
 import type { SendWhatsAppMessageCommand, SendWhatsAppMessageCommandOutput } from '@aws-sdk/client-socialmessaging';
 import {
   AwsSmsNotifier,
   AwsWhatsAppNotifier,
   cleanSecrets,
-  ResendEmailNotifier,
+  SesEmailNotifier,
   SlackNotifier,
   TeamsNotifier,
   TelegramNotifier,
@@ -17,7 +18,7 @@ import {
 import { validateReplyTo } from '../src/services/contact/validate-reply-to.mjs';
 import { ok, NotifyOutcome } from '../src/types/index.mjs';
 import type { FetchFn } from '../src/clients/index.mjs';
-import type { ContactConfig, ContactMessage, ContactSecretsProvider, SmsClient, WhatsAppClient } from '../src/interfaces/index.mjs';
+import type { ContactConfig, ContactMessage, ContactSecretsProvider, EmailClient, SmsClient, WhatsAppClient } from '../src/interfaces/index.mjs';
 import type { ContactSecrets, Result } from '../src/types/index.mjs';
 
 interface Call {
@@ -47,6 +48,17 @@ const smsFake = (error?: Error): { client: SmsClient; sent: SendTextMessageComma
   return { client, sent };
 };
 
+const emailFake = (): { client: EmailClient; sent: SendEmailCommand[] } => {
+  const sent: SendEmailCommand[] = [];
+  const client: EmailClient = {
+    send: async (command: SendEmailCommand): Promise<SendEmailCommandOutput> => {
+      sent.push(command);
+      return { MessageId: 'e1', $metadata: {} };
+    },
+  };
+  return { client, sent };
+};
+
 const whatsAppFake = (): { client: WhatsAppClient; sent: SendWhatsAppMessageCommand[] } => {
   const sent: SendWhatsAppMessageCommand[] = [];
   const client: WhatsAppClient = {
@@ -65,7 +77,7 @@ const secrets = (value: ContactSecrets): ContactSecretsProvider => ({
   get: async (): Promise<Result<ContactSecrets>> => ok(value),
 });
 
-const config: ContactConfig = { secretArn: null, emailTo: 'davis@example.com', phoneTo: '+12145550100', rateLimitPerHour: 5 };
+const config: ContactConfig = { secretArn: null, emailTo: 'davis@example.com', emailFrom: null, phoneTo: '+12145550100', rateLimitPerHour: 5 };
 
 const message: ContactMessage = {
   id: 'abc',
@@ -86,9 +98,10 @@ describe('notifiers', () => {
     const { fetchFn, calls } = recorder();
     const sms = smsFake();
     const wa = whatsAppFake();
+    const email = emailFake();
     const empty: ContactSecretsProvider = secrets({});
     const all = [
-      new ResendEmailNotifier(empty, config, fetchFn),
+      new SesEmailNotifier(config, email.client),
       new AwsSmsNotifier(empty, config, sms.client),
       new AwsWhatsAppNotifier(empty, config, wa.client),
       new TelegramNotifier(empty, fetchFn),
@@ -99,15 +112,25 @@ describe('notifiers', () => {
     expect(calls).toHaveLength(0);
     expect(sms.sent).toHaveLength(0);
     expect(wa.sent).toHaveLength(0);
+    expect(email.sent).toHaveLength(0);
   });
 
-  test('Resend sends to Davis with reply_to set to the visitor', async () => {
-    const { fetchFn, calls } = recorder();
-    const res = await new ResendEmailNotifier(secrets({ resendApiKey: 'rk', emailFrom: 'site@dsylvester.io' }), config, fetchFn).send(message);
+  test('SES sends to Davis from the configured sender with reply-to set to the visitor', async () => {
+    const { client, sent } = emailFake();
+    const res = await new SesEmailNotifier({ ...config, emailFrom: 'Website <contact@dsylvester.ai>' }, client).send(message);
     expect(res).toEqual(ok(NotifyOutcome.Sent));
-    expect(calls[0]?.url).toBe('https://api.resend.com/emails');
-    expect(bodyOf(calls[0])).toMatchObject({ to: ['davis@example.com'], reply_to: 'ada@example.com' });
-    expect((calls[0]?.init.headers as Record<string, string>)['authorization']).toBe('Bearer rk');
+    expect(sent[0]?.input).toMatchObject({
+      FromEmailAddress: 'Website <contact@dsylvester.ai>',
+      Destination: { ToAddresses: ['davis@example.com'] },
+      ReplyToAddresses: ['ada@example.com'],
+    });
+    expect(sent[0]?.input.Content?.Simple?.Subject?.Data).toBe('[dsylvester.io] Employment opportunity from Ada <script>');
+  });
+
+  test('SES leaves reply-to unset when the visitor wants SMS or WhatsApp', async () => {
+    const { client, sent } = emailFake();
+    await new SesEmailNotifier({ ...config, emailFrom: 'contact@dsylvester.ai' }, client).send({ ...message, replyVia: 'sms', replyTo: '+12145550199' });
+    expect(sent[0]?.input.ReplyToAddresses).toBeUndefined();
   });
 
   test('AWS SMS sends a transactional text from the origination identity to Davis', async () => {
@@ -189,7 +212,7 @@ describe('notifiers', () => {
 
 describe('cleanSecrets', () => {
   test('drops blanks and REPLACE_ME placeholders', () => {
-    expect(cleanSecrets({ resendApiKey: 'REPLACE_ME', emailFrom: ' ', slackWebhookUrl: ' https://x ', extra: 3 })).toEqual({
+    expect(cleanSecrets({ telegramBotToken: 'REPLACE_ME', telegramChatId: ' ', slackWebhookUrl: ' https://x ', extra: 3 })).toEqual({
       slackWebhookUrl: 'https://x',
     });
   });

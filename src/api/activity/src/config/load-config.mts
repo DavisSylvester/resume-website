@@ -22,6 +22,7 @@ export const toAppConfig = (env: Env): AppConfig => ({
   contact: {
     secretArn: env.CONTACT_SECRET_ARN ?? null,
     emailTo: env.CONTACT_EMAIL_TO,
+    emailFrom: env.CONTACT_EMAIL_FROM ?? null,
     phoneTo: env.CONTACT_PHONE_TO,
     rateLimitPerHour: env.CONTACT_RATE_LIMIT_PER_HOUR,
   },

@@ -15,8 +15,6 @@ export class EnvContactSecretsProvider implements ContactSecretsProvider {
   public async get(): Promise<Result<ContactSecrets>> {
     return ok(
       cleanSecrets({
-        resendApiKey: this.env.RESEND_API_KEY,
-        emailFrom: this.env.CONTACT_EMAIL_FROM,
         smsOriginationIdentity: this.env.CONTACT_SMS_ORIGINATION_IDENTITY,
         whatsAppPhoneNumberId: this.env.CONTACT_WHATSAPP_PHONE_NUMBER_ID,
         whatsAppTemplateName: this.env.CONTACT_WHATSAPP_TEMPLATE,

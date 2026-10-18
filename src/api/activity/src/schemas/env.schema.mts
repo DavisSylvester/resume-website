@@ -19,11 +19,11 @@ export const EnvSchema = Type.Object({
   /** Secrets Manager ARN holding ContactSecrets JSON. Omit locally and use the per-channel vars below. */
   CONTACT_SECRET_ARN: Type.Optional(Type.String()),
   CONTACT_EMAIL_TO: Type.String({ default: 'dsylvesteriii@gmail.com' }),
+  /** Sender on an SES-verified domain, e.g. `Website <contact@dsylvester.ai>`. Unset skips email. */
+  CONTACT_EMAIL_FROM: Type.Optional(Type.String()),
   /** E.164; also the WhatsApp number that receives contact requests. */
   CONTACT_PHONE_TO: Type.String({ default: '+12142231413' }),
   CONTACT_RATE_LIMIT_PER_HOUR: Type.Integer({ minimum: 1, default: 5 }),
-  RESEND_API_KEY: Type.Optional(Type.String()),
-  CONTACT_EMAIL_FROM: Type.Optional(Type.String()),
   CONTACT_SMS_ORIGINATION_IDENTITY: Type.Optional(Type.String()),
   CONTACT_WHATSAPP_PHONE_NUMBER_ID: Type.Optional(Type.String()),
   CONTACT_WHATSAPP_TEMPLATE: Type.Optional(Type.String()),

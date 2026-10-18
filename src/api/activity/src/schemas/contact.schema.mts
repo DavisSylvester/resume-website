@@ -26,8 +26,6 @@ export const ContactRequestSchema = Type.Object({
  * credentials are missing (or still `REPLACE_ME`) is skipped rather than failing the request.
  */
 export const ContactSecretsSchema = Type.Object({
-  resendApiKey: Type.Optional(Type.String()),
-  emailFrom: Type.Optional(Type.String()),
   /** AWS End User Messaging SMS origination identity: phone number id/ARN or pool id. */
   smsOriginationIdentity: Type.Optional(Type.String()),
   /** AWS End User Messaging Social WhatsApp phone number id (`phone-number-id-…`). */

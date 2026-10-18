@@ -13,6 +13,9 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
 import { PlatformConfig, resourceName } from "./naming";
 
+/** SES-verified sending domain for contact-form email. */
+const CONTACT_EMAIL_DOMAIN: string = "dsylvester.ai";
+
 export interface ActivityApiProps {
   config: PlatformConfig;
   api: apigwv2.HttpApi;
@@ -67,12 +70,13 @@ export class ActivityApi extends Construct {
     // RETAIN: survives `cdk destroy`. Channels left as REPLACE_ME are skipped by the API, so
     // each one can be switched on independently with `aws secretsmanager put-secret-value`.
     // Do not edit the initial JSON below: a template change rewrites the live secret value.
-    // SMS and WhatsApp (AWS End User Messaging) need no keys, only these settings added to it:
+    // Email (SES), SMS and WhatsApp (End User Messaging) need no keys; the resendApiKey and emailFrom
+    // keys are unused. SMS and WhatsApp only need these settings added to it:
     // smsOriginationIdentity, whatsAppPhoneNumberId, whatsAppTemplateName, whatsAppTemplateLanguage.
     this.contactSecret = new secretsmanager.Secret(this, "ContactSecret", {
       secretName: resourceName(config, "contact"),
       description:
-        "Contact form channels: Resend (email), AWS End User Messaging (SMS + WhatsApp), Telegram bot, Slack and Teams webhooks",
+        "Contact form channels: AWS End User Messaging settings (SMS + WhatsApp), Telegram bot, Slack and Teams webhooks",
       secretStringValue: SecretValue.unsafePlainText(
         JSON.stringify({
           resendApiKey: "REPLACE_ME",
@@ -118,6 +122,8 @@ export class ActivityApi extends Construct {
         LOG_LEVEL: "info",
         CONTACT_SECRET_ARN: this.contactSecret.secretArn,
         CONTACT_EMAIL_TO: "dsylvesteriii@gmail.com",
+        // dsylvester.ai is already a verified SES domain identity (DKIM on) in this account.
+        CONTACT_EMAIL_FROM: `Davis Sylvester website <contact@${CONTACT_EMAIL_DOMAIN}>`,
         CONTACT_PHONE_TO: "+12142231413",
         CONTACT_RATE_LIMIT_PER_HOUR: "5",
       },
@@ -137,7 +143,13 @@ export class ActivityApi extends Construct {
       }),
     );
 
-    // Contact SMS and WhatsApp go through AWS End User Messaging with the function's own role.
+    // Contact email (SES), SMS and WhatsApp (End User Messaging) all use the function's own role.
+    this.fn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["ses:SendEmail"],
+        resources: [`arn:aws:ses:${region}:${account}:identity/${CONTACT_EMAIL_DOMAIN}`],
+      }),
+    );
     this.fn.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ["sms-voice:SendTextMessage"],

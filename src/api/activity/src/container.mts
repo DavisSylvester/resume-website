@@ -2,6 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { LambdaClient } from '@aws-sdk/client-lambda';
 import { PinpointSMSVoiceV2Client } from '@aws-sdk/client-pinpoint-sms-voice-v2';
 import { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import { SESv2Client } from '@aws-sdk/client-sesv2';
 import { SocialMessagingClient } from '@aws-sdk/client-socialmessaging';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import type { Logger } from 'winston';
@@ -13,8 +14,8 @@ import {
   GitHubAppClient,
   InlineTrigger,
   LambdaSelfTrigger,
-  ResendEmailNotifier,
   SecretsManagerContactSecretsProvider,
+  SesEmailNotifier,
   SecretsManagerCredentialsProvider,
   SlackNotifier,
   TeamsNotifier,
@@ -119,7 +120,7 @@ export const createContainer = (env: Env, overrides: ContainerOverrides = {}): C
       ? new SecretsManagerContactSecretsProvider(new SecretsManagerClient({}), config.contact.secretArn)
       : new EnvContactSecretsProvider(env));
   const notifiers: Notifier[] = overrides.notifiers ?? [
-    new ResendEmailNotifier(contactSecrets, config.contact, fetchFn),
+    new SesEmailNotifier(config.contact, new SESv2Client({})),
     new AwsSmsNotifier(contactSecrets, config.contact, new PinpointSMSVoiceV2Client({})),
     new AwsWhatsAppNotifier(contactSecrets, config.contact, new SocialMessagingClient({})),
     new TelegramNotifier(contactSecrets, fetchFn),
