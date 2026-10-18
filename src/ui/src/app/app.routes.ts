@@ -16,6 +16,16 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/portfolio/portfolio').then((m) => m.Portfolio),
   },
   {
+    path: 'privacy',
+    title: 'Privacy Policy | Davis Sylvester',
+    loadComponent: () => import('./pages/legal/privacy/privacy').then((m) => m.Privacy),
+  },
+  {
+    path: 'terms',
+    title: 'Terms of Use | Davis Sylvester',
+    loadComponent: () => import('./pages/legal/terms/terms').then((m) => m.Terms),
+  },
+  {
     path: 'portfolio/:slug',
     loadComponent: () =>
       import('./pages/portfolio-project/portfolio-project').then((m) => m.PortfolioProjectPage),

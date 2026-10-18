@@ -1,0 +1,35 @@
+// Shared by the privacy policy and terms pages: one readable column of prose.
+.legal {
+  // Plain block flow: .container's flex gap would stack on top of paragraph margins.
+  display: block;
+  max-width: 72ch;
+  margin: 0 auto;
+
+  h1 {
+    margin: 0 0 var(--space-2);
+  }
+
+  h2 {
+    margin: var(--space-6) 0 var(--space-2);
+    font-size: 1.25rem;
+  }
+
+  p,
+  li {
+    line-height: 1.6;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+  }
+
+  a {
+    color: var(--focus);
+  }
+}
+
+.legal__updated {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
