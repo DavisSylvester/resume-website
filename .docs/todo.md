@@ -8,13 +8,15 @@
 - [X] Live form submission arrives from @davis_resume_web_bot — 07:37:30 UTC 2026-10-18 test returned 202 `delivered: ["telegram"]` (id a5b50a39); user confirmed the sender
 - [X] Email via Amazon SES instead of Resend — sender `contact@dsylvester.ai` (already-verified SES identity, DKIM on, account has production access); local SES send returned `sent` 2026-10-18
 - [X] PR #14 merged (`a7884e5`, admin) and deployed; live `POST /contact` 2026-10-18 returned 202 `delivered: ["email","telegram"]` (id 48e88995)
-- [ ] Confirm the live SES email landed in the Gmail inbox, not spam — add a DMARC record for `dsylvester.ai` if it went to spam
+- [X] Live SES email reached Gmail — found 2026-10-18 via Gmail search: 13:08 and 13:20 UTC messages from `contact@dsylvester.ai` are in INBOX under the **Updates** tab (not spam), so the user missed them
+- [ ] Gmail filter so contact emails land in Primary — `from:contact@dsylvester.ai` → Categorize as Primary, Never send to Spam, Star; the user creates it (no filter tool)
+- [ ] Add a DMARC record for `dsylvester.ai` — none exists (`_dmarc` NXDOMAIN); not needed today since mail reaches the inbox, but it protects the domain from spoofing
 - [X] Replace Twilio with AWS End User Messaging (SMS + WhatsApp, IAM role, no keys) — feature/aws-messaging-and-cleanup; API 130/130, cdk synth shows both grants
 - [ ] AWS SMS: request a toll-free number in us-east-1 (End User Messaging SMS), finish its registration, add `smsOriginationIdentity` to `gh-app-contact-prod` — blocked on the user and carrier review
 - [ ] AWS WhatsApp: link a WhatsApp Business Account + sender number in End User Messaging Social, create a Utility template (`contact_request`, 2 body params), add `whatsAppPhoneNumberId` + `whatsAppTemplateName` to the secret — blocked on the user and Meta review
-- [ ] Confirm the contact email recipient — user typed "dsylvester" (cut off); `CONTACT_EMAIL_TO` is `dsylvesteriii@gmail.com` in `infrastructure/cdk/lib/activity-api.ts`
+- [X] Contact email recipient is `dsylvesteriii@gmail.com` — user found the SES test email there 2026-10-18 and kept that address
 - [X] `contact-dialog.scss` under the 4 kB budget — form primitives moved to global `src/styles/_forms.scss`; build has no warnings, dialog checked at 390/1280 px
-- [ ] Delete the merged `feature/contact-modal` branch locally and on GitHub — needs the user's OK
+- [X] Delete merged branches `feature/contact-modal`, `aws-messaging-and-cleanup`, `legal-pages`, `sms-opt-out-line` — deleted locally and on GitHub 2026-10-18 after the user's OK; `git branch -a` shows only `main`
 - [X] Contact modal + `POST /contact` with six channels — PR #12 merged as `bf7fb94`, deploy succeeded; API 127/127, UI 46/46, e2e 48/48; live preflight 204 and invalid POST 400 checked 2026-10-18
 - [X] Slack and Teams channels added — mock-webhook browser run delivered to both
 
