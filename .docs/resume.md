@@ -2,8 +2,8 @@
 
 ## Where to pick up
 
-All PRs (#6 to #9) are merged and deployed. Next: ask whether to delete the merged
-`feature/responsive-layout` branch, then pick from `.docs/todo.md`. The quickest wins are the
+All PRs (#6 to #10) are merged and deployed, and the merged feature branches are deleted.
+Next, pick from `.docs/todo.md`. The quickest wins are the
 three missing Expertise logos and wiring `bun run e2e` into CI. If the user brings back a
 Claude Design redesign, build it on `_breakpoints.scss` and the fluid tokens in `styles.scss`,
 and keep the e2e sweep green.
