@@ -7,8 +7,8 @@ PR #14) and **Telegram** (@davis_resume_web_bot; token is `TELEGRAM_TOKEN` in th
 repo `.env`, and it plus the chat id are in `gh-app-contact-prod`). The last live test returned
 `delivered: ["email","telegram"]`, and the user confirmed the Telegram message came from the new bot.
 
-First thing: ask the user whether that SES email reached the Gmail inbox or spam. If spam, add a
-DMARC TXT record for `dsylvester.ai`. After that, SMS and WhatsApp (AWS End User Messaging) are
+SES mail reaches Gmail's inbox but lands in the **Updates** tab, which the user doesn't watch;
+a Gmail filter to Primary is the fix (in todo). Next, SMS and WhatsApp (AWS End User Messaging) are
 blocked on the user's number registration and carrier/Meta review; Slack and Teams are still
 `REPLACE_ME`. Other open items are in `.docs/todo.md`.
 
