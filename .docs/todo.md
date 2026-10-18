@@ -6,7 +6,8 @@
 - [X] Send one real test message through the live form — 2026-10-18 07:22 UTC via the earlier @YtDailySubBot config: 202, `delivered: ["telegram"]`, user received it
 - [X] Give the contact form its own Telegram bot — @davis_resume_web_bot; direct `sendMessage` from it reached the user's chat (user confirmed 2026-10-18)
 - [X] Live form submission arrives from @davis_resume_web_bot — 07:37:30 UTC 2026-10-18 test returned 202 `delivered: ["telegram"]` (id a5b50a39); user confirmed the sender
-- [ ] Verify a sending domain in Resend and set `resendApiKey` + `emailFrom` — needed for email delivery
+- [X] Email via Amazon SES instead of Resend — sender `contact@dsylvester.ai` (already-verified SES identity, DKIM on, account has production access); local SES send returned `sent` 2026-10-18
+- [ ] After PR #14 deploys: one live `POST /contact` should return `delivered` with `email` and `telegram`; confirm the email lands in Gmail (not spam) — `_dmarc.dsylvester.ai` has no record, add one if it goes to spam
 - [X] Replace Twilio with AWS End User Messaging (SMS + WhatsApp, IAM role, no keys) — feature/aws-messaging-and-cleanup; API 130/130, cdk synth shows both grants
 - [ ] AWS SMS: request a toll-free number in us-east-1 (End User Messaging SMS), finish its registration, add `smsOriginationIdentity` to `gh-app-contact-prod` — blocked on the user and carrier review
 - [ ] AWS WhatsApp: link a WhatsApp Business Account + sender number in End User Messaging Social, create a Utility template (`contact_request`, 2 body params), add `whatsAppPhoneNumberId` + `whatsAppTemplateName` to the secret — blocked on the user and Meta review
