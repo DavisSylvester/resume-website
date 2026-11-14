@@ -6,8 +6,17 @@ Audit and hardening done on 2026-11-14 for the GitHub App and AWS account `31820
 ## GitHub App `dsylvester-activity`
 
 - Installed once, on the personal account `DavisSylvester` only. It is in no organization.
-- Permissions are read-only: `contents: read` and `metadata: read`. It has no Administration,
-  organization or write permission, so it cannot create, change or delete any repository.
+- Every permission is `read`; there is no write or Administration permission, so the App
+  cannot create, change or delete any repository, PR, workflow run or organization.
+  - Used by the code: `contents`, `metadata`, `pull_requests`, `actions`.
+  - Also granted at the user's request (2026-11-14), unused by the code: `repository_hooks`,
+    `repository_advisories`, `secret_scanning_alerts`, `secret_scanning_bypass_requests`, and
+    the organization scopes `actions_variables`, `copilot_requests`, `hooks`, `models`,
+    `projects`, `self_hosted_runners`. The organization scopes do nothing until the App is
+    installed on an organization.
+  - **Accepted risk:** `secret_scanning_alerts` exposes leaked secret values, and the hook scopes
+    expose webhook configuration. A leak of the App's private key would therefore reveal more
+    than code. That is why the key's secret and the deploy path below are locked down.
 - The only webhook event the code uses is `push`.
 - The private key lives in the Secrets Manager secret `gh-app-github-app-prod`. Only the
   activity Lambda's role is granted read on it.

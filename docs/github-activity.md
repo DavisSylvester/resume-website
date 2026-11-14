@@ -153,7 +153,7 @@ The page also has an "Engineering insights" section with infrastructure as code 
 - **How it works:** a commit ledger in DynamoDB holds one classified record per commit: line counts per file class and the commit type, with no messages or file names. Private commits are keyed by an opaque repository id.
 - **Backfill:** each hourly run classifies at most 300 new commits, so the first 12-month backfill takes several hours. The section header shows how many commits are still pending.
 - **Real time:** a push queues its commits, and the webhook asynchronously invokes the same Lambda to classify them, so the IaC figures move within seconds.
-- **Permissions:** the App is deliberately limited to `contents: read` and `metadata: read` (decided 2026-11-14). It has no Pull requests or Actions permission, so those cards cover public repositories only and say "Public repositories only for now". This is intentional: do not add permissions. Confirm the live permissions with `GET /app` and `GET /app/installations/{id}` using an App JWT.
+- **Permissions:** every App permission is `read` (14 scopes, chosen by the user 2026-11-14; the full list and the accepted risk are in [security.md](security.md)). The code uses only `contents`, `metadata`, `pull_requests` and `actions`. There is no write or Administration permission. Adding a permission takes effect only after the installation owner accepts it at https://github.com/settings/installations. Confirm the live permissions with `GET /app` and `GET /app/installations/{id}` using an App JWT.
 
 ## Visual design
 

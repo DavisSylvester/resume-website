@@ -143,7 +143,7 @@ Durable facts and decisions. Last updated 2026-11-14 (security hardening).
 
 The full posture is in `docs/security.md`.
 
-- **Decision: the GitHub App is read-repo only.** The user asked for it to read repos and nothing else: contents+metadata read, `push` event only. The PR/Actions insight cards fall back to public repos ("Public repositories only for now"). Do not suggest adding permissions back.
+- **Decision (revised 2026-11-14): the GitHub App is read-only, with 14 scopes, all `read`.** Contents, Metadata, Pull requests and Actions are what the code uses; the user also asked for repo hooks, advisories, secret-scanning alerts and bypass requests, and six org scopes (accepted risk recorded in docs/security.md). The user first cut it to contents+metadata, then asked for PR and Actions read back the same day. Never add write, Administration or org-write permissions. The user also mentioned organizations; whether that means installing on orgs (needs the App set to "Any account" plus an org owner's approval) or org-level read permissions was still being clarified.
 - **The App is installed only on the user account `DavisSylvester`**, in no organization (`GET /app/installations` returns one installation). It has no Administration permission, so it can never create, change or delete repos.
 - **Trap: the deploy path is account admin.** `gh-app-github-deploy-prod` (OIDC, `main` only) assumes the CDK bootstrap roles, and `cfn-exec-role` has `AdministratorAccess`. Whoever can push to `main` owns the AWS account. That is why the `protect-main` ruleset (id 27278574) exists; don't loosen it.
 - Collaborator `2advancesolutions` has write access on resume-website. The user chose to keep it, PR-only.
