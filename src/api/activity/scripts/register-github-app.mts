@@ -36,7 +36,7 @@ const manifest: Record<string, unknown> = {
   public: false,
   hook_attributes: { url: webhookUrl, active: true },
   redirect_url: `http://localhost:${port}/callback`,
-  default_permissions: { contents: 'read', metadata: 'read', pull_requests: 'read', actions: 'read' },
+  default_permissions: { contents: 'read', metadata: 'read' },
   default_events: ['push'],
 };
 

@@ -9,6 +9,7 @@ import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations
 // Import local build of aws-constructs to use the updated certificate logic
 import { SpaCFRoute53 } from "@sylvesterllc/aws-constructs";
 import { ActivityApi } from "./activity-api";
+import { AuditTrail } from "./audit-trail";
 import { loadPlatformConfig } from "./naming";
 
 export class CdkStack extends cdk.Stack {
@@ -92,5 +93,8 @@ export class CdkStack extends cdk.Stack {
     new CfnOutput(this, "ApiUrl", { value: api.url! });
 
     new ActivityApi(this, "ActivityApi", { config: loadPlatformConfig(this), api });
+
+    // Account-wide audit log (see lib/audit-trail.ts).
+    new AuditTrail(this, "AuditTrail", { config: loadPlatformConfig(this) });
   }
 }

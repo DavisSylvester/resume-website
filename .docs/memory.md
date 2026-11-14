@@ -1,6 +1,6 @@
 # Memory — davis-resume
 
-Durable facts and decisions. Last updated 2026-10-18 (contact modal, PR #12).
+Durable facts and decisions. Last updated 2026-11-14 (security hardening).
 
 ## Site and deploy
 
@@ -138,3 +138,15 @@ Durable facts and decisions. Last updated 2026-10-18 (contact modal, PR #12).
   `D:\projects\davisSylvester\bjj-open-mat\scripts\promo-video` (Remotion). Not committed there.
   Music: "Street Hip-Hop" by SoundSurfer (Pixabay Content License), 96 BPM. A commercially
   released song ("Can't Be Touched") was requested and declined — it needs a sync license.
+
+## Security (2026-11-14)
+
+The full posture is in `docs/security.md`.
+
+- **Decision: the GitHub App is read-repo only.** The user asked for it to read repos and nothing else: contents+metadata read, `push` event only. The PR/Actions insight cards fall back to public repos ("Public repositories only for now"). Do not suggest adding permissions back.
+- **The App is installed only on the user account `DavisSylvester`**, in no organization (`GET /app/installations` returns one installation). It has no Administration permission, so it can never create, change or delete repos.
+- **Trap: the deploy path is account admin.** `gh-app-github-deploy-prod` (OIDC, `main` only) assumes the CDK bootstrap roles, and `cfn-exec-role` has `AdministratorAccess`. Whoever can push to `main` owns the AWS account. That is why the `protect-main` ruleset (id 27278574) exists; don't loosen it.
+- Collaborator `2advancesolutions` has write access on resume-website. The user chose to keep it, PR-only.
+- CloudTrail prefix: the user chose `gh-app` for the account-wide trail on 2026-11-14, even though it covers the whole account.
+- **Trap: there are two clones of this repo.** `D:\projects\davisSylvester\davis-resume` is the one the notes above were written from; `D:\projects\davisSylvester\github-app` was 35 commits behind `origin/main` on 2026-11-14. A `cdk diff` from the stale copy would have **destroyed the live `/contact` feature**. Always `git fetch` and work from the latest `origin/main` before any CDK diff or deploy.
+- Auditing the App: sign an App JWT from `gh-app-github-app-prod` (pipe `aws secretsmanager get-secret-value` into a Bun script using `jose`; never print the key), then `GET /app` and `GET /app/installations/{id}`.
