@@ -42,5 +42,6 @@ can assume the CDK bootstrap roles, which hold `AdministratorAccess`. Anyone who
 | Root MFA | On |
 | Root access key | Unused; delete it from the root sign-in (Security credentials) |
 | `dsylvester` access keys | One, `...R3BA`, used by this machine. The unused `...FYX7` was deleted on 2026-11-14 |
-| `dsylvester` MFA | Add it in the IAM console |
+| `dsylvester` MFA | On: virtual device `dsylvester-phone` (authenticator app), enabled 2026-11-15. It covers console sign-in only; the CLI key does not require MFA |
+| Unassigned MFA device `jjames` | Deleted 2026-11-15 (was attached to no user and never enabled) |
 | CloudTrail | Trail `gh-app-cloudtrail-prod` → bucket `gh-app-cloudtrail-logs-prod` (all regions, file validation, 365-day retention). Defined in `infrastructure/cdk/lib/audit-trail.ts` |

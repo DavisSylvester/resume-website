@@ -6,7 +6,8 @@
 - [ ] Re-add Pull requests + Actions read to the App, and accept the new permissions on the installation — user reversed the read-only cut on 2026-11-14; needs their sudo
 - [ ] Re-verify the App after both changes — `GET /app` and `GET /app/installations/171901652` with an App JWT should show only contents+metadata read and `suspended_at: null`
 - [ ] Delete the root access key — active, never used; only the root sign-in can delete it (Security credentials)
-- [ ] Add MFA to IAM user `dsylvester` — the account admin; IAM console → Users → Security credentials; needs the user's phone
+- [X] Add MFA to IAM user `dsylvester` — virtual device `dsylvester-phone` enabled 2026-11-15 10:26 PM CST; `list-mfa-devices` shows it, CLI still works
+- [X] Delete unassigned virtual MFA device `jjames` — confirmed unassigned and never enabled, then deleted 2026-11-15; only the root and `dsylvester-phone` devices remain
 - [ ] Merge the feature/aws-hardening PR — deploys CloudTrail `gh-app-cloudtrail-prod` + bucket `gh-app-cloudtrail-logs-prod`; then confirm with `aws cloudtrail get-trail-status --name gh-app-cloudtrail-prod`
 - [X] Protect `main` on resume-website — ruleset `protect-main` id 27278574 active (PR + 1 approval, no force-push/delete, repo-admin bypass); confirmed via the create response
 - [X] Delete unused `dsylvester` access key `...FYX7` — never used per get-access-key-last-used; `list-access-keys` now shows only `...R3BA`
