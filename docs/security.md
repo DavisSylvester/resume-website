@@ -1,0 +1,47 @@
+# Security posture
+
+Audit and hardening done on 2026-11-14 for the GitHub App and AWS account `318205107378`
+(profile `dsylvesteriii`).
+
+## GitHub App `dsylvester-activity`
+
+- Installed once, on the personal account `DavisSylvester` only. It is in no organization.
+- Every permission is `read`; there is no write or Administration permission, so the App
+  cannot create, change or delete any repository, PR, workflow run or organization.
+  - Used by the code: `contents`, `metadata`, `pull_requests`, `actions`.
+  - Also granted at the user's request (2026-11-14), unused by the code: `repository_hooks`,
+    `repository_advisories`, `secret_scanning_alerts`, `secret_scanning_bypass_requests`, and
+    the organization scopes `actions_variables`, `copilot_requests`, `hooks`, `models`,
+    `projects`, `self_hosted_runners`. The organization scopes do nothing until the App is
+    installed on an organization.
+  - **Accepted risk:** `secret_scanning_alerts` exposes leaked secret values, and the hook scopes
+    expose webhook configuration. A leak of the App's private key would therefore reveal more
+    than code. That is why the key's secret and the deploy path below are locked down.
+- The only webhook event the code uses is `push`.
+- The private key lives in the Secrets Manager secret `gh-app-github-app-prod`. Only the
+  activity Lambda's role is granted read on it.
+
+Check the live permissions with an App JWT: `GET /app` and `GET /app/installations/{id}`.
+
+## Deploy path
+
+Every push to `main` deploys through GitHub Actions. The OIDC role `gh-app-github-deploy-prod`
+can assume the CDK bootstrap roles, which hold `AdministratorAccess`. Anyone who can push to
+`main` can therefore act as an account administrator.
+
+- `main` is protected by the repository ruleset `protect-main` (id 27278574). It requires a PR
+  with one approval, and blocks force-pushes and branch deletion. The repository admin
+  role can bypass it.
+- Collaborator `2advancesolutions` keeps write access but can only change `main` through a PR
+  the owner approves.
+
+## AWS account
+
+| Item | State |
+|---|---|
+| Root MFA | On |
+| Root access key | Unused; delete it from the root sign-in (Security credentials) |
+| `dsylvester` access keys | One, `...R3BA`, used by this machine. The unused `...FYX7` was deleted on 2026-11-14 |
+| `dsylvester` MFA | On: virtual device `dsylvester-phone` (authenticator app), enabled 2026-11-15. It covers console sign-in only; the CLI key does not require MFA |
+| Unassigned MFA device `jjames` | Deleted 2026-11-15 (was attached to no user and never enabled) |
+| CloudTrail | Trail `gh-app-cloudtrail-prod` → bucket `gh-app-cloudtrail-logs-prod` (all regions, file validation, 365-day retention). Defined in `infrastructure/cdk/lib/audit-trail.ts` |
