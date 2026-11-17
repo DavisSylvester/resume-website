@@ -95,11 +95,12 @@ jobs:
             src/ui/ai/screenshots/responsive/
           if-no-files-found: ignore
 
-      - name: Infrastructure - install and type-check
+      - name: Infrastructure - install, type-check and test
         working-directory: infrastructure/cdk
         run: |
           bun install --frozen-lockfile
           bunx tsc --noEmit
+          bun test
 
   deploy:
     name: Deploy to AWS

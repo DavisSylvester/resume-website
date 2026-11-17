@@ -32,5 +32,8 @@
     "eslint": "latest",
     "typescript": "6.0.3",
     "typescript-eslint": "latest"
+  },
+  "overrides": {
+    "minimatch": "11.0.8"
   }
 }
