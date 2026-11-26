@@ -9,7 +9,7 @@ import { expect, test, type Page } from '@playwright/test';
  */
 
 const WIDTHS: number[] = [320, 390, 600, 768, 1024, 1280, 1440, 1920];
-const PAGES: string[] = ['/', '/about', '/portfolio', '/activity', '/privacy', '/terms'];
+const PAGES: string[] = ['/', '/about', '/portfolio', '/private-projects', '/activity', '/privacy', '/terms'];
 /** Below this width the navbar collapses into the drawer (the `md` breakpoint). */
 const NAV_DRAWER_MAX: number = 900;
 
@@ -33,6 +33,11 @@ for (const width of WIDTHS) {
           (): number => document.documentElement.scrollWidth - window.innerWidth,
         );
         expect(overflow, `page is ${overflow}px wider than the viewport`).toBeLessThanOrEqual(0);
+
+        // Every page except home is standalone: the home sections must not render above it.
+        if (path !== '/' && path !== '/about') {
+          await expect(page.locator('#hero'), `${path} should not render the home page`).toHaveCount(0);
+        }
 
         await page.screenshot({
           path: `../../ai/screenshots/responsive/${slug(path)}-${width}.png`,

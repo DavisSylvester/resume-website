@@ -20,4 +20,6 @@ export interface PortfolioProject {
   appStoreUrl?: string;
   playStoreUrl?: string;
   websiteUrl?: string;
+  /** True for a project that runs behind sign-in and is not open to the public: shows the Secure badge, and has no public links. */
+  secure?: boolean;
 }

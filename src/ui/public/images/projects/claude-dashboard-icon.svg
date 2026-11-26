@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Claude Dashboard">
+  <rect width="64" height="64" rx="14" fill="#10100f"/>
+  <rect x="10" y="10" width="44" height="8" rx="3" fill="#3987e5" opacity="0.9"/>
+  <rect x="10" y="38" width="7" height="16" rx="2" fill="#3987e5"/>
+  <rect x="20" y="30" width="7" height="24" rx="2" fill="#5aa2f0"/>
+  <rect x="30" y="24" width="7" height="30" rx="2" fill="#d97757"/>
+  <rect x="40" y="34" width="7" height="20" rx="2" fill="#5aa2f0"/>
+  <circle cx="51" cy="27" r="4" fill="#2fbf71"/>
+</svg>

@@ -22,71 +22,33 @@
   gap: 1.25rem;
 }
 
-.project {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem;
-}
-
-.project__top {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
-.project__icon {
-  flex: none;
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
-}
-
-.project__text {
-  min-width: 0;
-}
-
-.project__name {
-  margin: 0;
-  font-size: 1.4rem;
-
-  a {
-    color: var(--text);
-    text-decoration: none;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-  }
-}
-
-.project__status {
-  margin: 0.2rem 0 0.5rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.project__tagline {
-  margin: 0;
-}
-
-.project .chips {
-  margin-top: 0;
-}
-
-.project__actions {
+.portfolio__private {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  border: 1px dashed color-mix(in srgb, var(--muted) 45%, transparent);
+
+  h2 {
+    margin: 0 0 0.35rem;
+    font-size: var(--fs-h3);
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    max-width: 60ch;
+    line-height: 1.5;
+  }
 }
 
-.project__summary-link {
+.portfolio__private-link {
   color: var(--text);
   font-weight: 600;
+  white-space: nowrap;
 
   &:hover,
   &:focus-visible {

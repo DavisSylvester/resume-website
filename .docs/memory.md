@@ -66,8 +66,31 @@ Durable facts and decisions. Last updated 2026-11-14 (security hardening).
   and sets it from `requestContext.http.sourceIp`; locally every request is `local`.
 - **BJJ Open Mat's GitHub repo is private**, so portfolio entries carry store + website links but
   no repo link.
+- **Private projects get `secure: true` and a Secure badge (2026-11-26).** The user asked for a
+  "secure badge" on the Claude Dashboard entry "because it won't be exposed to the world".
+  `secure` on `PortfolioProject` renders `<app-secure-badge>` (`portfolio/secure-badge/`, a green
+  lock pill; `[onAccent]` variant for the purple home band) in all three places a project shows.
+  A secure project carries **no** store or website link, and its live URL
+  (`claude-dashboard.dsylvester.ai`) is deliberately left off the page; `portfolio.spec.ts`
+  asserts no secure project has a public link.
+- **Public and private projects are split (2026-11-26).** `PUBLIC_PROJECTS` / `PRIVATE_PROJECTS`
+  in `portfolio-projects.ts` filter on `secure`. `/portfolio` lists public only and links to
+  `/private-projects`; the home band still shows all projects. Both list pages render the shared
+  `portfolio/project-card` component. Summary pages stay at `/portfolio/:slug` for both; the back
+  link follows `secure`.
+- **Claude Dashboard entry facts come from the dashboard repo's own docs**
+  (`D:\projects\davisSylvester\claude-config-dashboard\.docs\memory.md`, `docs/INFRA.md`). Its
+  icon `public/images/projects/claude-dashboard-icon.svg` was drawn for the resume (the dashboard
+  has only a favicon.ico), using the dashboard's accent `#3987e5` on `#10100f`.
 
 ## Traps
+
+- **A new standalone page must be added to `isStandalonePage()` in `app.ts`**, or the whole home
+  page renders above it. `/private-projects` shipped that way at first and the e2e sweep still
+  passed; the sweep now asserts no `#hero` on every page except `/` and `/about`.
+- **Port 4200 may be another app.** `playwright.config.ts` reuses whatever answers on 4200; on
+  2026-11-26 it was `thumbtack-clone`'s `ng serve`, giving 16 false failures. Run
+  `ng serve --port 4322` and `E2E_BASE_URL=http://localhost:4322 npx playwright test`.
 
 - **`toSignal()` from `@angular/core/rxjs-interop` throws NG0203 on the Vite dev server only**
   (prebundled duplicate `@angular/core`). Unit tests and `ng build` do not catch it. The fix used:

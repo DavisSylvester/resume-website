@@ -4,7 +4,7 @@
     <h2 class="pro-projects__title">Professional Projects</h2>
     <p class="pro-projects__lead">
       Products I designed, built and shipped end to end — mobile apps, APIs, admin portals and the cloud
-      infrastructure behind them, live in the App Store and Google Play.
+      infrastructure behind them. Some are live in the App Store and Google Play; others run privately, behind a sign-in.
     </p>
   </header>
 
@@ -17,7 +17,12 @@
             <h3 class="pro-card__name">
               <a [routerLink]="['/portfolio', p.slug]">{{ p.name }}</a>
             </h3>
-            <span class="pro-card__status">{{ p.status }}</span>
+            <div class="pro-card__badges">
+              <span class="pro-card__status">{{ p.status }}</span>
+              @if (p.secure) {
+                <app-secure-badge [onAccent]="true" />
+              }
+            </div>
           </div>
         </div>
         <p class="pro-card__tagline">{{ p.tagline }}</p>
@@ -39,5 +44,8 @@
     }
   </div>
 
-  <a class="pro-projects__all" routerLink="/portfolio">See all public projects →</a>
+  <div class="pro-projects__links">
+    <a class="pro-projects__all" routerLink="/portfolio">See all public projects →</a>
+    <a class="pro-projects__all" routerLink="/private-projects">See private projects →</a>
+  </div>
 </div>

@@ -30,6 +30,13 @@ describe('Projects', () => {
     expect(el.querySelector('.store-links--on-accent a.store-link--primary')?.getAttribute('href')).toContain('apps.apple.com');
   });
 
+  it('links to both the public and the private projects pages', () => {
+    const hrefs: (string | null)[] = Array.from(el.querySelectorAll('.pro-projects__all')).map(
+      (a: Element): string | null => a.getAttribute('href'),
+    );
+    expect(hrefs).toEqual(['/portfolio', '/private-projects']);
+  });
+
   it('no longer shows the old employer cards', () => {
     expect(el.querySelector('.project-card')).toBeNull();
     expect(el.textContent).not.toContain('Selected Projects');

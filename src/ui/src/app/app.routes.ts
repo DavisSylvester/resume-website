@@ -16,6 +16,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/portfolio/portfolio').then((m) => m.Portfolio),
   },
   {
+    path: 'private-projects',
+    title: 'Private Projects | Davis Sylvester',
+    loadComponent: () => import('./pages/private-projects/private-projects').then((m) => m.PrivateProjects),
+  },
+  {
     path: 'privacy',
     title: 'Privacy Policy | Davis Sylvester',
     loadComponent: () => import('./pages/legal/privacy/privacy').then((m) => m.Privacy),

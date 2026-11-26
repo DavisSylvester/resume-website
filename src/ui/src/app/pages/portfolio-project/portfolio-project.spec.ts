@@ -24,6 +24,17 @@ describe('PortfolioProjectPage', () => {
     expect(title.getTitle()).toBe('BJJ Open Mat | Davis Sylvester');
   });
 
+  it('links a public project back to /portfolio and a private one back to /private-projects', async () => {
+    const pub = await setup('/portfolio/bjj-open-mat');
+    expect(pub.el.querySelector('.summary__back')?.getAttribute('href')).toBe('/portfolio');
+
+    TestBed.resetTestingModule();
+    const priv = await setup('/portfolio/claude-dashboard');
+    expect(priv.el.querySelector('.summary__back')?.getAttribute('href')).toBe('/private-projects');
+    expect(priv.el.querySelector('.secure-badge')).not.toBeNull();
+    expect(priv.el.querySelector('a.store-link')).toBeNull();
+  });
+
   it('shows a not-found message for an unknown slug', async () => {
     const { el } = await setup('/portfolio/does-not-exist');
 

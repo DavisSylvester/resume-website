@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PORTFOLIO_PROJECTS } from '../../portfolio/portfolio-projects';
 import { StoreLinks } from '../../portfolio/store-links/store-links';
+import { SecureBadge } from '../../portfolio/secure-badge/secure-badge';
 import type { PortfolioProject, ProjectHighlight } from '../../portfolio/interfaces';
 
 /** Home-page band in the accent color: the products I have built and shipped, with store links. */
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [RouterLink, StoreLinks],
+  imports: [RouterLink, StoreLinks, SecureBadge],
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
 })

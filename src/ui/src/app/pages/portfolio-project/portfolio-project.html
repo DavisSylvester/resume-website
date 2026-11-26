@@ -1,5 +1,9 @@
 <div class="container summary">
-  <a class="summary__back" routerLink="/portfolio">← All public projects</a>
+  @if (project()?.secure) {
+    <a class="summary__back" routerLink="/private-projects">← All private projects</a>
+  } @else {
+    <a class="summary__back" routerLink="/portfolio">← All public projects</a>
+  }
 
   @if (project(); as p) {
     <header class="summary__head">
@@ -7,7 +11,12 @@
       <div>
         <h1>{{ p.name }}</h1>
         <p class="summary__tagline">{{ p.tagline }}</p>
-        <p class="summary__status">{{ p.status }}</p>
+        <p class="summary__status">
+          <span>{{ p.status }}</span>
+          @if (p.secure) {
+            <app-secure-badge />
+          }
+        </p>
       </div>
     </header>
 
