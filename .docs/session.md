@@ -170,3 +170,10 @@ opening the contact dialog). `/portfolio` lists public projects only plus a link
 `#hero`. The first e2e run hit `thumbtack-clone` on :4200 (16 false failures); reran on :4322.
 
 **Left.** No navbar link; more private projects to be named by the user.
+
+**Shipping PR #21 (2026-11-26).** Pushed `be68012`; no Actions run appeared because the PR
+conflicted with `main` (stale local `main`, missing PRs #18/#19). Merged `origin/main` into the
+branch; only `.docs/resume.md` and `.docs/session.md` conflicted (kept both). `main` had bumped UI
+deps, so reinstalled and reran: 59/59 unit, lint clean, build ok. CI "Test and build" passed;
+merged with `--admin` as `5965b32` at 12:33 PM CST; the deploy on `main` succeeded and the live
+pages were checked with Playwright. Branch deleted locally and on GitHub (was `7a4a432`).

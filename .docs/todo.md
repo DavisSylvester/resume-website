@@ -54,6 +54,7 @@
 - [X] Private projects page `/private-projects` — user asked 2026-11-26; `/portfolio` now lists public only with a link to it; home lead reworded; ng test 59/59, eslint clean, e2e 72/72 on :4322, screenshots at 1280 and 390 px
 - [X] Reword "public"/"App Store" copy — home lead now says some are in the stores and others run privately; "Public projects" stays correct because `/portfolio` lists public projects only
 - [X] Run the e2e responsive sweep against the new card — 72/72 against `ng serve --port 4322` (2026-11-26)
+- [X] PR #21 merged and live — merge `5965b32` 2026-11-26 12:33 PM CST; Deploy run 45876818090 succeeded; Playwright on www.dsylvester.io: `/private-projects` title right, no `#hero`, Secure badge shown; `/portfolio` has no secure cards
 - [ ] Navbar link to `/private-projects` — not added: the inline bar only just fits at 900 px; reachable from `/portfolio` and the home band
 - [ ] More private projects — only Claude Dashboard is listed; user to name others (each needs `secure: true` + an icon)
 
