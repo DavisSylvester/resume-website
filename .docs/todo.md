@@ -1,5 +1,19 @@
 # Todo
 
+## Security hardening (2026-11-14, feature/aws-hardening)
+
+- [ ] Unsuspend the GitHub App installation — suspended since 2026-11-13 8:46 AM CST (cause unknown; check https://github.com/settings/security-log first). https://github.com/settings/installations/171901652 → Danger zone → Unsuspend; needs the user's sudo
+- [ ] Re-add Pull requests + Actions read to the App, and accept the new permissions on the installation — user reversed the read-only cut on 2026-11-14; needs their sudo
+- [ ] Re-verify the App after both changes — `GET /app` and `GET /app/installations/171901652` with an App JWT should show only contents+metadata read and `suspended_at: null`
+- [ ] Delete the root access key — active, never used; only the root sign-in can delete it (Security credentials)
+- [X] Add MFA to IAM user `dsylvester` — virtual device `dsylvester-phone` enabled 2026-11-15 10:26 PM CST; `list-mfa-devices` shows it, CLI still works
+- [X] Delete unassigned virtual MFA device `jjames` — confirmed unassigned and never enabled, then deleted 2026-11-15; only the root and `dsylvester-phone` devices remain
+- [ ] Merge the feature/aws-hardening PR — deploys CloudTrail `gh-app-cloudtrail-prod` + bucket `gh-app-cloudtrail-logs-prod`; then confirm with `aws cloudtrail get-trail-status --name gh-app-cloudtrail-prod`
+- [X] Protect `main` on resume-website — ruleset `protect-main` id 27278574 active (PR + 1 approval, no force-push/delete, repo-admin bypass); confirmed via the create response
+- [X] Delete unused `dsylvester` access key `...FYX7` — never used per get-access-key-last-used; `list-access-keys` now shows only `...R3BA`
+- [X] App manifest and docs list contents, metadata, pull_requests and actions read — matches the user's revised decision
+- [X] Audit who read `gh-app-github-app-prod` — CloudTrail 90-day history: only the activity Lambda role and `dsylvester` (Claude's own checks)
+
 ## Contact modal (PR #12)
 
 - [X] Fill `gh-app-contact-prod` for at least one channel — Telegram set 2026-10-18 07:29:59 UTC with @davis_resume_web_bot (token from repo `.env`)

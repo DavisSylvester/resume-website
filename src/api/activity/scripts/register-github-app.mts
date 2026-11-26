@@ -36,7 +36,24 @@ const manifest: Record<string, unknown> = {
   public: false,
   hook_attributes: { url: webhookUrl, active: true },
   redirect_url: `http://localhost:${port}/callback`,
-  default_permissions: { contents: 'read', metadata: 'read', pull_requests: 'read', actions: 'read' },
+  // All read-only, chosen by the user 2026-11-14. Only contents, metadata, pull_requests and
+  // actions are used by the code; the rest were requested explicitly. Never add a write scope.
+  default_permissions: {
+    contents: 'read',
+    metadata: 'read',
+    pull_requests: 'read',
+    actions: 'read',
+    repository_hooks: 'read',
+    repository_advisories: 'read',
+    secret_scanning_alerts: 'read',
+    secret_scanning_bypass_requests: 'read',
+    organization_actions_variables: 'read',
+    organization_copilot_requests: 'read',
+    organization_hooks: 'read',
+    organization_models: 'read',
+    organization_projects: 'read',
+    organization_self_hosted_runners: 'read',
+  },
   default_events: ['push'],
 };
 

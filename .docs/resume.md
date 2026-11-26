@@ -10,7 +10,9 @@ the `secure?: boolean` field in `portfolio/interfaces/i-portfolio-project.ts`; b
 `sections/projects`, `pages/portfolio`, `pages/portfolio-project` (html, scss, ts); tests in
 `pages/portfolio/portfolio.spec.ts`; icon `public/images/projects/claude-dashboard-icon.svg`.
 
-Earlier state (contact form):
+Earlier, 2026-11-14:** PR from `feature/aws-hardening` is open. The next action is the user's: unsuspend the GitHub App installation and drop its Pull requests/Actions permissions (todo.md, "Security hardening"). Then re-verify with an App JWT (memory.md, Security) and merge the PR so the CloudTrail trail deploys. Work from the latest `origin/main`; the `github-app` clone was stale.
+
+Earlier state, still accurate for the contact form:
 
 The contact form is live on two channels: **email** (Amazon SES, from `contact@dsylvester.ai`,
 PR #14) and **Telegram** (@davis_resume_web_bot; token is `TELEGRAM_TOKEN` in the gitignored
@@ -42,6 +44,13 @@ curl -s -X POST https://etgzi1pkz8.execute-api.us-east-1.amazonaws.com/contact \
   `scripts/promo-video/`)
 
 ## Files changed this session
+
+Security hardening (2026-11-14, feature/aws-hardening)
+- `infrastructure/cdk/lib/audit-trail.ts` — new; account-wide CloudTrail + private, encrypted, versioned log bucket (365-day expiry, retained)
+- `infrastructure/cdk/lib/cdk-stack.ts` — instantiates `AuditTrail`
+- `src/api/activity/scripts/register-github-app.mts` — manifest asks for contents+metadata read only
+- `docs/github-activity.md` — Permissions bullet now says read-only on purpose
+- `docs/security.md` — new; App, deploy path and AWS account posture
 
 Activity (PR #6)
 - `src/ui/src/app/pages/activity/activity.ts` — `iacTile()` + two IaC tiles in the key figures

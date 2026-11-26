@@ -127,6 +127,15 @@ Claude Design redesign, bjj-open-mat items.
 07:37:30 UTC live test returned 202 `delivered: ["telegram"]`, sender not yet confirmed by the user; the other five channels' credentials;
 everything carried forward in todo.md.
 
+## 2026-11-14: GitHub App and AWS security audit
+
+- Asked what the GitHub App can do. Live check with an App JWT: one installation (user `DavisSylvester`, all repos), read-only contents/metadata/pull_requests/actions, plus 7 webhook events though the code only handles `push`. **The installation was suspended at 2026-11-13 8:46 AM CST**, which explains the app being broken; the cause is unknown.
+- The user wants read-repo only. The manifest and docs were updated; the GitHub UI changes and unsuspend need the user's sudo, so they are still open.
+- AWS audit: only the activity Lambda and `dsylvester` read the secret in 90 days. Risks found: unprotected `main` with a write collaborator, so any push deploys with admin; an unused root access key; no MFA and two keys on `dsylvester`; no CloudTrail trail.
+- Fixed: ruleset `protect-main`; deleted unused key `...FYX7`; added the CloudTrail trail to CDK (prefix `gh-app`, chosen by the user). Root key and MFA need the user.
+- **Near miss:** the first `cdk diff` showed the `/contact` routes, secret and messaging permissions being destroyed. The cause was the `github-app` clone's `main` being 35 commits behind origin. Moved the work onto the latest `main`; the re-diff showed only the 3 new trail resources.
+- Checks: CDK `jest` ran 0 test cases (the project has none); eslint on the changed API file is clean; `cdk diff` is add-only.
+
 ## 2026-11-26: Claude Dashboard portfolio entry with a Secure badge
 
 **Ask.** Add a project entry for Claude Dashboard (`claude-config-dashboard` repo) with a summary,
