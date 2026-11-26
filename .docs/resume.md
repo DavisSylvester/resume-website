@@ -3,7 +3,8 @@
 ## Where to pick up
 
 **2026-11-26:** the Claude Dashboard portfolio entry (Secure badge) and the new `/private-projects`
-page shipped in PR #21 (merged with admin). Next action: ask which other private projects to list.
+page shipped in PR #21 (merged with admin as `5965b32`, deployed 12:35 PM CST, checked live on
+www.dsylvester.io). Next action: ask which other private projects to list.
 New files: `pages/private-projects/`, `portfolio/project-card/`. Files: the entry in
 `src/ui/src/app/portfolio/portfolio-projects.ts`; the badge in `src/ui/src/app/portfolio/secure-badge/`;
 the `secure?: boolean` field in `portfolio/interfaces/i-portfolio-project.ts`; badge wiring in

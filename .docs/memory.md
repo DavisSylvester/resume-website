@@ -88,6 +88,10 @@ Durable facts and decisions. Last updated 2026-11-14 (security hardening).
 - **A new standalone page must be added to `isStandalonePage()` in `app.ts`**, or the whole home
   page renders above it. `/private-projects` shipped that way at first and the e2e sweep still
   passed; the sweep now asserts no `#hero` on every page except `/` and `/about`.
+- **Local `main` can be stale before a PR.** PR #21 was cut from a local `main` missing PRs #18
+  and #19, so GitHub showed it CONFLICTING and **Actions did not run at all** (only GitGuardian
+  reported). `git fetch` and merge `origin/main` before expecting checks. `main` is protected by the
+  `protect-main` ruleset, so merges use `gh pr merge --admin`.
 - **Port 4200 may be another app.** `playwright.config.ts` reuses whatever answers on 4200; on
   2026-11-26 it was `thumbtack-clone`'s `ng serve`, giving 16 false failures. Run
   `ng serve --port 4322` and `E2E_BASE_URL=http://localhost:4322 npx playwright test`.
