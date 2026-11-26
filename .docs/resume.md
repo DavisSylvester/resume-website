@@ -10,7 +10,7 @@ the `secure?: boolean` field in `portfolio/interfaces/i-portfolio-project.ts`; b
 `sections/projects`, `pages/portfolio`, `pages/portfolio-project` (html, scss, ts); tests in
 `pages/portfolio/portfolio.spec.ts`; icon `public/images/projects/claude-dashboard-icon.svg`.
 
-Earlier, 2026-11-14:** PR from `feature/aws-hardening` is open. The next action is the user's: unsuspend the GitHub App installation and drop its Pull requests/Actions permissions (todo.md, "Security hardening"). Then re-verify with an App JWT (memory.md, Security) and merge the PR so the CloudTrail trail deploys. Work from the latest `origin/main`; the `github-app` clone was stale.
+**Earlier, 2026-11-14:** PR from `feature/aws-hardening` is open. The next action is the user's: unsuspend the GitHub App installation and drop its Pull requests/Actions permissions (todo.md, "Security hardening"). Then re-verify with an App JWT (memory.md, Security) and merge the PR so the CloudTrail trail deploys. Work from the latest `origin/main`; the `github-app` clone was stale.
 
 Earlier state, still accurate for the contact form:
 
