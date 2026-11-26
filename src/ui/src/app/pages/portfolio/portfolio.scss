@@ -63,6 +63,10 @@
 }
 
 .project__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0.2rem 0 0.5rem;
   color: var(--muted);
   font-size: 0.9rem;

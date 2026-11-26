@@ -37,6 +37,41 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     playStoreUrl: 'https://play.google.com/store/apps/details?id=com.davissylvester.bjjopenmat',
     websiteUrl: 'https://bjjopenmat.app',
   },
+  {
+    slug: 'claude-dashboard',
+    name: 'Claude Dashboard',
+    tagline: 'A private control panel for my whole Claude Code setup: agents, skills, knowledge base, usage and spend.',
+    icon: '/images/projects/claude-dashboard-icon.svg',
+    status: 'Private · behind sign-in',
+    secure: true,
+    summary: [
+      'Claude Dashboard is a web app that shows my entire Claude Code setup in one place: global settings, custom agents, ' +
+        'skills, the knowledge base of known failures and fixes, memory notes, prompt history, token usage and estimated ' +
+        'spend. It also has a safe editor for every instruction and agent file, so I can change how my agents behave ' +
+        'without opening a terminal.',
+      'It runs two ways. Locally, a Bun API reads the real configuration folders on my PC. In the cloud, a sync agent ' +
+        'mirrors a redacted copy to S3 and the same app serves it from AWS Lambda, with live updates over WebSockets. ' +
+        'It is not open to the public: every request needs an Auth0 sign-in with the owner role, and prompt text never ' +
+        'leaves the machine, only counts.',
+    ],
+    highlights: [
+      { title: 'Everything in one view', text: 'Config, agents, skills, knowledge base, memory, history, usage and storage across 13 views.' },
+      { title: 'Safe editing', text: 'Allow-listed markdown only, version checks with conflict detection, a backup before every write, and an extra confirmation for CLAUDE.md.' },
+      { title: 'Usage and spend', text: 'Token usage by model and day, an API-equivalent cost estimate, and the plan I actually pay, kept as separate numbers.' },
+      { title: 'Knowledge base tools', text: 'Browse failure lessons, spot instructions that contradict each other, and hand a lesson to an agent as a ready-to-run zip.' },
+      { title: 'Skill curation', text: 'Groups similar skills so duplicates can be merged, with one-click checks run by Claude.' },
+      { title: 'Live updates', text: 'File changes on the PC reach the open dashboard within seconds over an authenticated WebSocket.' },
+    ],
+    architecture: [
+      { title: 'Web', text: 'Angular 22 with signals and standalone components; d3 charts; light and dark themes; fully responsive.' },
+      { title: 'API', text: 'Bun + Elysia with TypeBox validation, one Docker image serving three AWS Lambda functions.' },
+      { title: 'Data', text: 'S3 for the synced files, SQS for change events, MongoDB for WebSocket tickets and live connections.' },
+      { title: 'Identity', text: 'Auth0 SPA with PKCE and Google sign-in; the API checks the JWT and a namespaced owner role on every call.' },
+      { title: 'Delivery', text: 'AWS CDK stack with least-privilege IAM per function; API Gateway HTTP and WebSocket APIs on a custom domain.' },
+      { title: 'Quality', text: 'Bun and Vitest unit tests, plus Playwright responsive and visual-fidelity audits against the production build.' },
+    ],
+    stack: ['Angular', 'TypeScript', 'Bun', 'Elysia', 'TypeBox', 'd3', 'Auth0', 'AWS Lambda', 'API Gateway', 'S3', 'SQS', 'MongoDB', 'AWS CDK', 'Playwright'],
+  },
 ];
 
 export const findProject = (slug: string): PortfolioProject | undefined =>

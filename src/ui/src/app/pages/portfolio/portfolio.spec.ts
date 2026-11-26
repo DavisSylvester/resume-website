@@ -23,6 +23,20 @@ describe('PORTFOLIO_PROJECTS', () => {
     expect(findProject('bjj-open-mat')?.appStoreUrl).toBe('https://apps.apple.com/us/app/bjj-open-mat/id6787704999');
     expect(findProject('nope')).toBeUndefined();
   });
+
+  it('marks Claude Dashboard as secure, with no public links', () => {
+    const p: PortfolioProject | undefined = findProject('claude-dashboard');
+    expect(p?.secure).toBe(true);
+    expect(p?.appStoreUrl).toBeUndefined();
+    expect(p?.playStoreUrl).toBeUndefined();
+    expect(p?.websiteUrl).toBeUndefined();
+  });
+
+  it('gives no secure project a public link', () => {
+    for (const p of PORTFOLIO_PROJECTS.filter((x: PortfolioProject): boolean => x.secure === true)) {
+      expect([p.appStoreUrl, p.playStoreUrl, p.websiteUrl].filter(Boolean)).toEqual([]);
+    }
+  });
 });
 
 describe('Portfolio', () => {
@@ -37,5 +51,19 @@ describe('Portfolio', () => {
     expect(summary?.getAttribute('href')).toBe('/portfolio/bjj-open-mat');
     const appStore: HTMLAnchorElement | null = el.querySelector('a.store-link--primary');
     expect(appStore?.href).toContain('apps.apple.com');
+  });
+
+  it('shows the Secure badge only on secure projects', async () => {
+    await TestBed.configureTestingModule({ imports: [Portfolio], providers: [provideRouter([])] }).compileComponents();
+    const fixture = TestBed.createComponent(Portfolio);
+    await fixture.whenStable();
+    const el: HTMLElement = fixture.nativeElement;
+
+    const secureCount: number = PORTFOLIO_PROJECTS.filter((p: PortfolioProject): boolean => p.secure === true).length;
+    expect(el.querySelectorAll('.secure-badge').length).toBe(secureCount);
+    const cards: HTMLElement[] = Array.from(el.querySelectorAll<HTMLElement>('.project'));
+    const dash: HTMLElement | undefined = cards.find((c: HTMLElement): boolean => c.textContent?.includes('Claude Dashboard') ?? false);
+    expect(dash?.querySelector('.secure-badge')?.textContent).toContain('Secure');
+    expect(dash?.querySelector('a.store-link')).toBeNull();
   });
 });

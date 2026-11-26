@@ -66,6 +66,17 @@ Durable facts and decisions. Last updated 2026-10-18 (contact modal, PR #12).
   and sets it from `requestContext.http.sourceIp`; locally every request is `local`.
 - **BJJ Open Mat's GitHub repo is private**, so portfolio entries carry store + website links but
   no repo link.
+- **Private projects get `secure: true` and a Secure badge (2026-11-26).** The user asked for a
+  "secure badge" on the Claude Dashboard entry "because it won't be exposed to the world".
+  `secure` on `PortfolioProject` renders `<app-secure-badge>` (`portfolio/secure-badge/`, a green
+  lock pill; `[onAccent]` variant for the purple home band) in all three places a project shows.
+  A secure project carries **no** store or website link, and its live URL
+  (`claude-dashboard.dsylvester.ai`) is deliberately left off the page; `portfolio.spec.ts`
+  asserts no secure project has a public link.
+- **Claude Dashboard entry facts come from the dashboard repo's own docs**
+  (`D:\projects\davisSylvester\claude-config-dashboard\.docs\memory.md`, `docs/INFRA.md`). Its
+  icon `public/images/projects/claude-dashboard-icon.svg` was drawn for the resume (the dashboard
+  has only a favicon.ico), using the dashboard's accent `#3987e5` on `#10100f`.
 
 ## Traps
 

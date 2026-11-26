@@ -36,6 +36,9 @@
 - [X] `/portfolio` list + `/portfolio/bjj-open-mat` summary page — PR #7 merged; Playwright confirmed live page renders with title "BJJ Open Mat | Davis Sylvester"
 - [X] Professional Projects accent section replaces Selected Projects — 24/24 tests, build passes, checked dark/light/390px (PR #8)
 - [X] Home page horizontal overflow on tablets/phones — zero overflow 320–1920 px in the e2e sweep (PR #8, PR #9)
+- [X] Claude Dashboard portfolio entry with a Secure badge — branch `feature/claude-dashboard-project` (2026-11-26); ng test 53/53, eslint clean, ng build passes; screenshots of home band and `/portfolio/claude-dashboard` checked
+- [ ] Reword "public"/"App Store" copy now that a private project is listed — home lead says "live in the App Store and Google Play", `/portfolio` is titled "Public projects", links say "See all public projects"; waiting on the user's choice (rename, or keep secure projects off the home band)
+- [ ] Run the e2e responsive sweep against the new card — not run this session (unit tests + screenshots only)
 
 ## Outside this repo
 

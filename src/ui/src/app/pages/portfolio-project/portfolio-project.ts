@@ -4,13 +4,14 @@ import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { findProject } from '../../portfolio/portfolio-projects';
 import { StoreLinks } from '../../portfolio/store-links/store-links';
+import { SecureBadge } from '../../portfolio/secure-badge/secure-badge';
 import type { PortfolioProject } from '../../portfolio/interfaces';
 
 /** Summary page for one public project: what it does, how it is built, and where to get it. */
 @Component({
   selector: 'app-portfolio-project',
   standalone: true,
-  imports: [RouterLink, StoreLinks],
+  imports: [RouterLink, StoreLinks, SecureBadge],
   templateUrl: './portfolio-project.html',
   styleUrl: './portfolio-project.scss',
 })

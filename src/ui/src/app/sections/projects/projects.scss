@@ -104,6 +104,13 @@
   }
 }
 
+.pro-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .pro-card__status {
   font-size: 0.8rem;
   font-weight: 700;

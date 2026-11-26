@@ -16,7 +16,12 @@
             <h2 class="project__name">
               <a [routerLink]="['/portfolio', p.slug]">{{ p.name }}</a>
             </h2>
-            <p class="project__status">{{ p.status }}</p>
+            <p class="project__status">
+              <span>{{ p.status }}</span>
+              @if (p.secure) {
+                <app-secure-badge />
+              }
+            </p>
             <p class="project__tagline">{{ p.tagline }}</p>
           </div>
         </div>

@@ -2,6 +2,16 @@
 
 ## Where to pick up
 
+**2026-11-26:** the Claude Dashboard portfolio entry (with the new Secure badge) is on
+`feature/claude-dashboard-project` and its PR is open. Next action: get the user's answer on the
+"public projects" / "live in the App Store" wording (see todo), then merge. Files: the entry in
+`src/ui/src/app/portfolio/portfolio-projects.ts`; the badge in `src/ui/src/app/portfolio/secure-badge/`;
+the `secure?: boolean` field in `portfolio/interfaces/i-portfolio-project.ts`; badge wiring in
+`sections/projects`, `pages/portfolio`, `pages/portfolio-project` (html, scss, ts); tests in
+`pages/portfolio/portfolio.spec.ts`; icon `public/images/projects/claude-dashboard-icon.svg`.
+
+Earlier state (contact form):
+
 The contact form is live on two channels: **email** (Amazon SES, from `contact@dsylvester.ai`,
 PR #14) and **Telegram** (@davis_resume_web_bot; token is `TELEGRAM_TOKEN` in the gitignored
 repo `.env`, and it plus the chat id are in `gh-app-contact-prod`). The last live test returned

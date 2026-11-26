@@ -126,3 +126,23 @@ Claude Design redesign, bjj-open-mat items.
 **Left unfinished:** confirming a live form submission arrives from @davis_resume_web_bot — the
 07:37:30 UTC live test returned 202 `delivered: ["telegram"]`, sender not yet confirmed by the user; the other five channels' credentials;
 everything carried forward in todo.md.
+
+## 2026-11-26: Claude Dashboard portfolio entry with a Secure badge
+
+**Ask.** Add a project entry for Claude Dashboard (`claude-config-dashboard` repo) with a summary,
+and a "secure badge because it won't be exposed to the world".
+
+**Done.**
+- Added `secure?: boolean` to `PortfolioProject` and a standalone `SecureBadge` component (lock icon,
+  green pill, `onAccent` variant). Wired it into the home Professional Projects card, `/portfolio`
+  and `/portfolio/:slug`.
+- Added the `claude-dashboard` entry: tagline, two summary paragraphs, six highlights, six
+  architecture rows, 14 stack chips, status "Private · behind sign-in", no public links. Drew an
+  SVG icon.
+- Tests: Claude Dashboard is secure with no links; no secure project has a public link; the badge
+  renders only on secure cards. ng test 53/53, eslint clean, ng build passes. Screenshots via a
+  throwaway Playwright script against `ng serve --port 4321` looked right.
+
+**Left unfinished.** The site still calls the list "Public projects" and says the products are
+"live in the App Store and Google Play"; the user hasn't chosen new wording. The e2e responsive
+sweep was not run.

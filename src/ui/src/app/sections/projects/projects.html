@@ -17,7 +17,12 @@
             <h3 class="pro-card__name">
               <a [routerLink]="['/portfolio', p.slug]">{{ p.name }}</a>
             </h3>
-            <span class="pro-card__status">{{ p.status }}</span>
+            <div class="pro-card__badges">
+              <span class="pro-card__status">{{ p.status }}</span>
+              @if (p.secure) {
+                <app-secure-badge [onAccent]="true" />
+              }
+            </div>
           </div>
         </div>
         <p class="pro-card__tagline">{{ p.tagline }}</p>
