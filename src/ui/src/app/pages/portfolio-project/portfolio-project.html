@@ -1,5 +1,9 @@
 <div class="container summary">
-  <a class="summary__back" routerLink="/portfolio">← All public projects</a>
+  @if (project()?.secure) {
+    <a class="summary__back" routerLink="/private-projects">← All private projects</a>
+  } @else {
+    <a class="summary__back" routerLink="/portfolio">← All public projects</a>
+  }
 
   @if (project(); as p) {
     <header class="summary__head">

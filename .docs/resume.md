@@ -2,9 +2,9 @@
 
 ## Where to pick up
 
-**2026-11-26:** the Claude Dashboard portfolio entry (with the new Secure badge) is on
-`feature/claude-dashboard-project` and its PR is open. Next action: get the user's answer on the
-"public projects" / "live in the App Store" wording (see todo), then merge. Files: the entry in
+**2026-11-26:** the Claude Dashboard portfolio entry (Secure badge) and the new `/private-projects`
+page shipped in PR #21 (merged with admin). Next action: ask which other private projects to list.
+New files: `pages/private-projects/`, `portfolio/project-card/`. Files: the entry in
 `src/ui/src/app/portfolio/portfolio-projects.ts`; the badge in `src/ui/src/app/portfolio/secure-badge/`;
 the `secure?: boolean` field in `portfolio/interfaces/i-portfolio-project.ts`; badge wiring in
 `sections/projects`, `pages/portfolio`, `pages/portfolio-project` (html, scss, ts); tests in

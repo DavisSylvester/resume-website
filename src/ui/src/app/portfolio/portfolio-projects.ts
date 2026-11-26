@@ -74,5 +74,11 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
   },
 ];
 
+/** Projects anyone can use: they have store or website links. Listed on /portfolio. */
+export const PUBLIC_PROJECTS: PortfolioProject[] = PORTFOLIO_PROJECTS.filter((p: PortfolioProject): boolean => p.secure !== true);
+
+/** Projects behind sign-in, with no public links. Listed on /private-projects. */
+export const PRIVATE_PROJECTS: PortfolioProject[] = PORTFOLIO_PROJECTS.filter((p: PortfolioProject): boolean => p.secure === true);
+
 export const findProject = (slug: string): PortfolioProject | undefined =>
   PORTFOLIO_PROJECTS.find((p: PortfolioProject): boolean => p.slug === slug);

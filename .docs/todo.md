@@ -37,8 +37,11 @@
 - [X] Professional Projects accent section replaces Selected Projects — 24/24 tests, build passes, checked dark/light/390px (PR #8)
 - [X] Home page horizontal overflow on tablets/phones — zero overflow 320–1920 px in the e2e sweep (PR #8, PR #9)
 - [X] Claude Dashboard portfolio entry with a Secure badge — branch `feature/claude-dashboard-project` (2026-11-26); ng test 53/53, eslint clean, ng build passes; screenshots of home band and `/portfolio/claude-dashboard` checked
-- [ ] Reword "public"/"App Store" copy now that a private project is listed — home lead says "live in the App Store and Google Play", `/portfolio` is titled "Public projects", links say "See all public projects"; waiting on the user's choice (rename, or keep secure projects off the home band)
-- [ ] Run the e2e responsive sweep against the new card — not run this session (unit tests + screenshots only)
+- [X] Private projects page `/private-projects` — user asked 2026-11-26; `/portfolio` now lists public only with a link to it; home lead reworded; ng test 59/59, eslint clean, e2e 72/72 on :4322, screenshots at 1280 and 390 px
+- [X] Reword "public"/"App Store" copy — home lead now says some are in the stores and others run privately; "Public projects" stays correct because `/portfolio` lists public projects only
+- [X] Run the e2e responsive sweep against the new card — 72/72 against `ng serve --port 4322` (2026-11-26)
+- [ ] Navbar link to `/private-projects` — not added: the inline bar only just fits at 900 px; reachable from `/portfolio` and the home band
+- [ ] More private projects — only Claude Dashboard is listed; user to name others (each needs `secure: true` + an icon)
 
 ## Outside this repo
 

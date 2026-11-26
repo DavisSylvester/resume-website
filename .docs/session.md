@@ -146,3 +146,18 @@ and a "secure badge because it won't be exposed to the world".
 **Left unfinished.** The site still calls the list "Public projects" and says the products are
 "live in the App Store and Google Play"; the user hasn't chosen new wording. The e2e responsive
 sweep was not run.
+
+## 2026-11-26 (later): Private projects page, PR #21 merged
+
+**Ask.** A page about private projects that aren't public; then "app and cpp and merge with admin
+and watch until green".
+
+**Done.** `/private-projects` (intro, three "why private" cards, project cards, walkthrough button
+opening the contact dialog). `/portfolio` lists public projects only plus a link to it. Shared
+`ProjectCard`. Home lead reworded and a second link added. Tests: 59/59 unit, 72/72 e2e.
+
+**Failed along the way.** First screenshots showed the home page above the new page: `app.ts`
+`isStandalonePage()` lacked the route. The e2e sweep had passed anyway, so it now checks for
+`#hero`. The first e2e run hit `thumbtack-clone` on :4200 (16 false failures); reran on :4322.
+
+**Left.** No navbar link; more private projects to be named by the user.

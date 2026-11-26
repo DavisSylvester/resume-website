@@ -9,32 +9,22 @@
 
   <ul class="portfolio__list">
     @for (p of projects; track p.slug) {
-      <li class="card project">
-        <div class="project__top">
-          <img class="project__icon" [src]="p.icon" [alt]="p.name + ' app icon'" width="72" height="72" loading="lazy" />
-          <div class="project__text">
-            <h2 class="project__name">
-              <a [routerLink]="['/portfolio', p.slug]">{{ p.name }}</a>
-            </h2>
-            <p class="project__status">
-              <span>{{ p.status }}</span>
-              @if (p.secure) {
-                <app-secure-badge />
-              }
-            </p>
-            <p class="project__tagline">{{ p.tagline }}</p>
-          </div>
-        </div>
-        <div class="chips">
-          @for (s of p.stack; track s) {
-            <span class="chip">{{ s }}</span>
-          }
-        </div>
-        <div class="project__actions">
-          <a class="project__summary-link" [routerLink]="['/portfolio', p.slug]">Read the summary →</a>
-          <app-store-links [project]="p" />
-        </div>
-      </li>
+      <li><app-project-card [project]="p" /></li>
     }
   </ul>
+
+  @if (privateCount > 0) {
+    <aside class="portfolio__private">
+      <div>
+        <h2>Private projects</h2>
+        <p>
+          Some of what I build runs behind a sign-in and is not open to the public. Those projects have their own page,
+          with what they do and how they are built.
+        </p>
+      </div>
+      <a class="portfolio__private-link" routerLink="/private-projects">
+        See {{ privateCount }} private {{ privateCount === 1 ? 'project' : 'projects' }} →
+      </a>
+    </aside>
+  }
 </div>

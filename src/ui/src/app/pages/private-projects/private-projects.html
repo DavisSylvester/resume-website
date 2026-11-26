@@ -1,0 +1,37 @@
+<div class="container private">
+  <a class="private__back" routerLink="/portfolio">← Public projects</a>
+
+  <header class="private__head">
+    <h1>Private projects <app-secure-badge /></h1>
+    <p class="private__sub">
+      Not everything I build is open to the world. These projects run privately, behind a sign-in, so there is nothing to
+      download or visit. This page describes what each one does and how it is built instead.
+    </p>
+  </header>
+
+  <ul class="private__reasons">
+    @for (r of reasons; track r.title) {
+      <li>
+        <strong>{{ r.title }}</strong>
+        <span>{{ r.text }}</span>
+      </li>
+    }
+  </ul>
+
+  @if (projects.length > 0) {
+    <ul class="private__list">
+      @for (p of projects; track p.slug) {
+        <li><app-project-card [project]="p" /></li>
+      }
+    </ul>
+  } @else {
+    <p class="private__empty">No private projects are listed yet.</p>
+  }
+
+  <aside class="private__cta">
+    <p>Want to see one of these working? I am happy to walk you through it on a call.</p>
+    <button type="button" class="private__cta-button" aria-haspopup="dialog" (click)="openContact()">
+      Ask for a walkthrough
+    </button>
+  </aside>
+</div>
